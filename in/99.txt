@@ -1,4 +1,3 @@
-$
 9999234234-3232
 entero, entero;
 // comment goes here

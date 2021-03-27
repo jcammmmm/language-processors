@@ -8,7 +8,13 @@ ONLY_LETTERS = "[a-zA-Z]"
 ALPHANUMERIC = "[a-zA-Z0-9_]"  
 WHITESPACES  = r"\s|\Z"       # [ \t\n\r\f\v]
 ANYVALIDCHAR = r"\S"          # [^ \t\n\r\f\v].
-TEXTSPACES   = r"\t| "        
+TEXTSPACES   = r"\t| "
+
+TK_DELTA_ID       = 1000
+TK_ID_TYPES_BEGIN = 1000
+TK_ID_OPS_BEGIN   = TK_ID_TYPES_BEGIN + TK_DELTA_ID
+TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
+
 
 def main():
   st = StateMachine('in/99.txt')
@@ -16,9 +22,9 @@ def main():
     for _ in range(53):
       var = st.next_token()
       print(var)
-  except NameError:
+  except LexicalError:
     print("Lexical error.")
-  except EOFError:
+  except EOFReachedError:
     print("EOF reached.")
 
 
@@ -31,7 +37,6 @@ class StateMachine:
   def next_token(self):
     word = []
     state = 0
-    prev_state = state
     while 1:
       c = self.in_buffer.popleft()
       self.in_buffer.append(self.source.read(1))
@@ -42,21 +47,41 @@ class StateMachine:
         for _ in range(rewind):
           x = word.pop()
           self.in_buffer.appendleft(x)
-        return word, token.name
+        return build_token(token, ''.join(word))
       elif state == 0:
         word.pop()
       elif state == -1:
-        raise NameError("LEXICAL ERROR")
+        raise LexicalError()
       elif state == -2:
-        raise EOFError("EOF reached.")
+        raise EOFReachedError()
       elif state == -3:
         # block of comment, ignore...
         return
-    
-    prev_state = state
       
   def turn_off(self):
     self.source.close()
+
+def build_token(token_type, lexeme):
+  token_id = token_type.value
+  token = ""
+  if token_type == Token.raw_word:
+    if lexeme in RESERVED_WORDS:
+      # reserved words
+      token = "{}".format(lexeme)
+    else:
+      # identifiers
+      token = "id,{}".format(lexeme)
+  elif TK_ID_TYPES_BEGIN <= token_id and token_id <= TK_DELTA_ID + 100:
+    # types
+    token = "{},{}".format(token_type.name, lexeme)
+  elif TK_ID_OPS_BEGIN <= token_id and token_id <= TK_ID_OPS_BEGIN + 100:
+    # operators and symbols
+    token = "{}".format(token_type.name)
+  
+  token = "<" + token + ">"
+  return token 
+
+    
 
 """
 returns a tuple composed of three integer. The first indicates the 
@@ -143,21 +168,21 @@ def next_state(state, c):
     else:
       state = 1
       backw = 1
-      token = Token.entero
+      token = Token.tk_entero
   elif state == 4:
     if re.match(r"\d", c):
       state = 5
     else:
       state = 1
       backw = 2
-      token = Token.entero
+      token = Token.tk_entero
   elif state == 5:
     if re.match(r"\d", c):
       state = 5
     else:
       state = 1
       backw = 1
-      token = Token.real
+      token = Token.tk_real
   elif state == 6:
     if re.match(r"\d", c):
       state = 3
@@ -311,47 +336,94 @@ def next_state(state, c):
   return (state, backw, token)
 
 class Token(enum.Enum):
-  raw_word = 0
-  no_token = 1
-  funcion_principal = 1
-  fin_principal = 2
-  entero = 3
-  real = 4
-  cadena = 5
-  caracter = 6
-  id = 4
-  tk_entero = 7
-  tk_real = 8
-  tk_cadena = 9
-  tk_caracter = 11
-  tk_mas = 111
-  tk_menos = 1111
-  tk_mult = 12
-  tk_div = 122
-  tk_mod = 1222
-  tk_asig = 13
-  tk_menor = 133
-  tk_mayor = 1333
-  tk_menor_igual = 14
-  tk_mayor_igual = 144
-  tk_igual = 1444
-  tk_y = 14444
-  tk_o = 15
-  tk_dif = 155
-  tk_neg = 1555
-  tk_dosp = 15555
-  tk_pyc = 155555
-  tk_coma = 16
-  tk_punto = 166
-  tk_par_izq = 1666
-  tk_par_der = 166666
-  comment_block = 17
-  comment_line = 177
+  raw_word          = 0
+  reserved_word     = 1
+  identifier        = 2
+  no_token          = 3
+  tk_entero         = TK_ID_TYPES_BEGIN
+  tk_real           = TK_ID_TYPES_BEGIN + 1
+  tk_cadena         = TK_ID_TYPES_BEGIN + 2
+  tk_caracter       = TK_ID_TYPES_BEGIN + 3
+  tk_mas            = TK_ID_OPS_BEGIN
+  tk_menos          = TK_ID_OPS_BEGIN + 1
+  tk_mult           = TK_ID_OPS_BEGIN + 2
+  tk_div            = TK_ID_OPS_BEGIN + 3
+  tk_mod            = TK_ID_OPS_BEGIN + 4 
+  tk_asig           = TK_ID_OPS_BEGIN + 5
+  tk_menor          = TK_ID_OPS_BEGIN + 6
+  tk_mayor          = TK_ID_OPS_BEGIN + 7
+  tk_menor_igual    = TK_ID_OPS_BEGIN + 8
+  tk_mayor_igual    = TK_ID_OPS_BEGIN + 9
+  tk_igual          = TK_ID_OPS_BEGIN + 10
+  tk_y              = TK_ID_OPS_BEGIN + 11
+  tk_o              = TK_ID_OPS_BEGIN + 12
+  tk_dif            = TK_ID_OPS_BEGIN + 13
+  tk_neg            = TK_ID_OPS_BEGIN + 14
+  tk_dosp           = TK_ID_OPS_BEGIN + 15
+  tk_pyc            = TK_ID_OPS_BEGIN + 16
+  tk_coma           = TK_ID_OPS_BEGIN + 17
+  tk_punto          = TK_ID_OPS_BEGIN + 18
+  tk_par_izq        = TK_ID_OPS_BEGIN + 19
+  tk_par_der        = TK_ID_OPS_BEGIN + 20
+  comment_block     = TK_ID_CMMT_BEGIN
+  comment_line      = TK_ID_CMMT_BEGIN + 1
 
-RESERVED_WORDS = [
+RESERVED_WORDS = {
+  # inout
   "leer",
-  "escribir"
-]
+  "escribir",
+  "imprimir",
+  # main,
+  "funcion_principal",
+  "fin_principal",
+  # types
+  "booleano",
+  "caracter",
+  "entero",
+  "real",
+  "cadena",
+  "falso",
+  "verdadero",
+  # if-else
+  "si",
+  "entonces",
+  "si_no",
+  "fin_si",
+  # while
+  "mientras",
+  "hacer",
+  "fin_mientras",
+  # for
+  "para",
+  "hacer",
+  "fin_para",
+  # do while
+  "hacer",
+  "mientras",
+  # switch
+  "seleccionar",
+  "entre",
+  "caso",
+  "romper",
+  "defecto",
+  "fin_seleccionar",
+  # struct
+  "estructura",
+  "fin_estructura",
+  # funciones
+  "funcion",
+  "hacer",
+  "retornar",
+  "fin_funcion"
+}
+
+class LexicalError(Exception):
+  """ Thrown when a Lexical error occurs"""
+  pass
+
+class EOFReachedError(Exception):
+  """ Thrown when the file has been completely parsed"""
+  pass
 
 if __name__ == '__main__':
   main()
