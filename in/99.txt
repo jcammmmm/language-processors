@@ -1,6 +1,12 @@
-r111111
-2222222
--333333
--44.444
-'x'
-"abc 56"
+$
+9999234234-3232
+entero, entero;
+// comment goes here
+(hola hola)
+*por mas+ 
++ * % : ; , . ( )  
+"sdlfkjsdlkfjsdlkf"
+'s'
+
+
+
