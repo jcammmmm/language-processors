@@ -15,19 +15,80 @@ TK_ID_TYPES_BEGIN = 1000
 TK_ID_OPS_BEGIN   = TK_ID_TYPES_BEGIN + TK_DELTA_ID
 TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
 
+WRITE_TO_FILE = True
+
 
 def main():
-  st = StateMachine('in/03.txt')
+  sm = StateMachineStdIn()
+  if WRITE_TO_FILE:
+    f = open("out/xx.txt", "w")
   try:
-    for _ in range(53):
-      var = st.next_token()
-      print(var)
-  except LexicalError:
-    print("Lexical error.")
+    while 1:
+      src = input() + "\n"
+      tokens = sm.get_tokens(src)
+      if WRITE_TO_FILE:
+        write_tokens(f, tokens)
+      else:
+        print_tokens(tokens)
+  except LexicalError as le:
+    error_str = ">>> Error lexico (linea: {}, posicion: {})".format(sm.line, sm.col)
+    if WRITE_TO_FILE:
+      write_tokens(f, le.tokens)
+      f.write(error_str)
+    else:
+      print_tokens(le.tokens)
+      print(error_str)
   except EOFReachedError:
     print("EOF reached.")
 
-class StateMachine:
+def write_tokens(file, tokens):
+  for tk in tokens:
+    file.write(tk)
+    file.write('\n')
+
+def print_tokens(tokens):
+  for tk in tokens:
+    print(tk)
+
+
+class StateMachineStdIn:
+  def __init__(self):
+    self.line = 0
+    self.col = 0
+    self.state = 0
+
+  def get_tokens(self, source_code):
+    self.line += 1
+    self.col = 0
+    code = list(source_code)
+    code.reverse()
+    word = []
+    tokens = []
+    while len(code) != 0:
+      c = code.pop()
+      self.col += 1
+      word.append(c)
+      self.state, rewind, token = next_state(self.state, c)
+      if self.state == 1:
+        for _ in range(rewind):
+          x = word.pop()
+          self.col -= 1
+          code.append(x)
+        tokens.append(build_token(token, ''.join(word), self.line, self.col - len(word) + 1))
+        self.state = 0
+        word = []
+      elif self.state == 0:
+        word.pop()
+      elif self.state == -1:
+        raise LexicalError(tokens)
+      elif self.state == -2:
+        raise EOFReachedError()
+      elif self.state == -3:
+        word = []
+        self.state = 0
+    return tokens
+
+class StateMachineFromFile:
   def __init__(self, filename):
     self.source = open(filename, 'r')
     self.in_buffer = deque(self.source.read(10))
@@ -429,7 +490,8 @@ RESERVED_WORDS = {
 
 class LexicalError(Exception):
   """ Thrown when a Lexical error occurs"""
-  pass
+  def __init__(self, tokens):
+    self.tokens = tokens
 
 class EOFReachedError(Exception):
   """ Thrown when the file has been completely parsed"""
