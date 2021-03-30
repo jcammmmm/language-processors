@@ -1,0 +1,5 @@
+funcion_principal
+    entero a1 = 5 * 3;
+    imprimir( a1 / 10 );
+fin_principal
+// comentario al final

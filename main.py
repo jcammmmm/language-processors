@@ -17,7 +17,7 @@ TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
 
 
 def main():
-  st = StateMachine('in/99.txt')
+  st = StateMachine('in/03.txt')
   try:
     for _ in range(53):
       var = st.next_token()
@@ -27,12 +27,12 @@ def main():
   except EOFReachedError:
     print("EOF reached.")
 
-
-
 class StateMachine:
   def __init__(self, filename):
     self.source = open(filename, 'r')
     self.in_buffer = deque(self.source.read(10))
+    self.line = 1
+    self.col = 0
 
   def next_token(self):
     word = []
@@ -41,13 +41,23 @@ class StateMachine:
       c = self.in_buffer.popleft()
       self.in_buffer.append(self.source.read(1))
 
+      self.col += 1
       word.append(c)
+      
       state, rewind, token = next_state(state, c)
+      line = self.line
+      column = self.col 
+      if c == '\n':
+        self.col = 0
+        self.line += 1
+          
       if state == 1:
         for _ in range(rewind):
           x = word.pop()
-          self.in_buffer.appendleft(x)
-        return build_token(token, ''.join(word))
+          if x != '\n':
+            self.col -= 1
+            self.in_buffer.appendleft(x)
+        return build_token(token, ''.join(word), line, column - len(word) - rewind + 1)
       elif state == 0:
         word.pop()
       elif state == -1:
@@ -55,13 +65,13 @@ class StateMachine:
       elif state == -2:
         raise EOFReachedError()
       elif state == -3:
-        # block of comment, ignore...
-        return
-      
+        word = []
+        state = 0
+
   def turn_off(self):
     self.source.close()
 
-def build_token(token_type, lexeme):
+def build_token(token_type, lexeme, line, column):
   token_id = token_type.value
   token = ""
   if token_type == Token.raw_word:
@@ -78,7 +88,7 @@ def build_token(token_type, lexeme):
     # operators and symbols
     token = "{}".format(token_type.name)
   
-  token = "<" + token + ">"
+  token = "<{},{},{}>".format(token, line, column)
   return token 
 
     
@@ -326,7 +336,7 @@ def next_state(state, c):
     else:
       state = 26
   elif state == 28:
-    if c == '\n':
+    if c == '\n' or c == '':
       state = -3
     else:
       state = 28
