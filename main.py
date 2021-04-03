@@ -40,6 +40,8 @@ def main():
       print(error_str)
   except EOFReachedError:
     print("EOF reached.")
+  except EOFError:
+    pass
 
 def write_tokens(file, tokens):
   for tk in tokens:
@@ -122,7 +124,7 @@ class StateMachineFromFile:
       elif state == 0:
         word.pop()
       elif state == -1:
-        raise LexicalError()
+        raise LexicalError(token)
       elif state == -2:
         raise EOFReachedError()
       elif state == -3:
@@ -255,14 +257,11 @@ def next_state(state, c):
       backw = 1
       token = Token.tk_real
   elif state == 6:
-    if re.match(r"\d", c):
-      state = 3
-    else:
       state = 1
-      backw = 1
       token = Token.tk_menos
+      backw = 1
   elif state == 7:
-    if re.match(ANYVALIDCHAR, c):
+    if re.match(ANYVALIDCHAR, c) or c == ' ':
       state = 8
     else:
       state = -1
