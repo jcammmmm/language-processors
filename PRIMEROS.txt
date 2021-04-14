@@ -1,0 +1,101 @@
+Recursion sin fin calculando PRIMEROS
+
+Saludos,
+
+
+he estado ejecutando a mano el primer ejercicio y obtengo recursión 
+infinita. Qué puedo estar haciendo mal?
+
+A = B  : A es lo mismo que B
+A ~ B  : añadir B a A
+P(A)   : PRIMEROS(A)
+a1 < A : el primer elemento de alfa es A
+e      : épsilon, vacío
+[  ]   : nuevo llamado recursivo
+[2.]   : paso 2
+[2a]   : paso 2 condicion a
+
+las lineas [2.] muestran el caso en el que se reconoce alfa
+Las lineas [2a] muestran el caso en el que a1 es terminal
+Las lineas [2b] muestran el caso en el que 'e' pertence a resultado
+Las lineas [2b] muestran el caso en el que a1 es no terminal
+Las lineas [2d] muestran el llamado a otras reglas gramaticales
+                con el mismo simbolo no terminal: A -> alfa_i
+ 
+PRIMEROS(D)
+# [  ] P(D)?
+# [2d]      P(D) = P(seis)
+# [2.]      a1 < seis
+# [2a]      P(D) ~ {seis}
+# [2d]      P(D) = P(e)
+# [  ]      α = e
+# [1.]      P(D) = {e}
+# [2r] P(D) = {seis e}
+
+PRIMEROS(C)
+# [  ] P(C)?
+# [2d]      P(C) = {cinco D B}
+# [2.]      a1 < cinco
+# [2a]      P(C) ~ {cinco}
+# [2r]      P(C) = {cinco}
+# [2d]      P(C) = P(e)
+# [  ]      α = e
+# [1.]      P(C) = {e}
+# [2r]      P(C) = {e}
+# [2r] P(C) = {cinco e}
+
+PRIMEROS(B)
+# [  ] P(B)? 
+# [2d]      𝝰 = D cuatro C tres
+# [2d]          P(𝝰) = P(D cuatro C tres)
+# [2.]          a1 < D
+# [2b]          P(𝝰) ~ P(D) - {e}
+# [..]          P(𝝰) ~ {seis e} - {e}
+# [2b]          P(𝝰) = {seis}
+# [2c]              P(𝝰2) ~ P(cuatro C tres)
+# [2c]              a1 < cuatro
+# [2a]              P(𝝰2) = {cuatro}
+# [2c]          P(𝝰) ~ P(𝝰2)
+# [2r]      P(𝝰) = {seis cuatro}
+# [2d]      𝝰 = e
+# [1.]          P(𝝰) = P(e)
+# [2r]      P(𝝰) = {e} 
+# [  ] P(B) = {seis cuatro e}     
+
+PRIMEROS(A)
+# [2d] P(A)? 
+# [  ]       𝝰 = A tres
+# [  ]       P(𝝰) = P(A tres)
+# [  ]       a1 < A
+# [  ]       P(𝝰) ~ P(A) - {e}
+# [  ]       P(𝝰) ~ P(A) - {e}
+
+# [  ]       𝝰 = B C D
+# [2.]       P(𝝰) = P(B C D)
+# [2.]       a1 < B
+# [2b]       P(𝝰) ~ P(B) - {e}
+# [2b]       P(𝝰) ~ {seis cuatro e} - {e}
+# [2b]       P(𝝰) ~ {seis cuatro}
+# [2b]       P(𝝰) = {seis cuatro}
+# [2c]              𝝰2 = C D
+# [2.]              P(𝝰2) = P(C D)
+# [2.]              a1 < C
+# [2b]              P(𝝰2) ~ P(C) - {e}
+# [2c]              P(𝝰2) ~ {cinco e} - {e}
+# [2c]              P(𝝰2) ~ {cinco}
+# [  ]                  𝝰3 = D
+# [2.]                  P(𝝰3) = P(D)
+# [2.]                  a1 < D
+# [2b]                  P(𝝰3) ~ P(D) - {e}
+# [2b]                  P(𝝰3) ~ {seis e} - {e}
+# [2b]                  P(𝝰3) ~ {seis}
+# [2c]                  P(𝝰3) ~ {e}
+# [2c]                  P(𝝰3) = {seis e}
+# [  ]              P(𝝰2) ~ P(𝝰3)
+# [  ]              P(𝝰2) = {cinco seis e}
+# [2c]       P(𝝰) ~ P(𝝰2)
+# [2c]       P(𝝰) = {seis cuatro cinco seis e}
+# [2c]       P(𝝰) = {seis cuatro cinco e}
+
+# [  ]       𝝰 = e
+# [  ]       P(𝝰) = {e}
