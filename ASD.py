@@ -5,12 +5,13 @@ import pprint
 ##########################################################
 
 def main():
-    # primeros()
-    # siguientes()
-
-    parser = TopDownSyntacticParser(GRAMMAR)
-    PRIMEROS = parser.compute_primeros()
+    GRAMMAR = get_grammar(0)
+    
+    asd = TopDownSyntacticParser(GRAMMAR)
+    PRIMEROS = asd.compute_primeros()
     pprint.pprint(PRIMEROS)
+    SIGUIENTES = asd.compute_siguientes()
+    pprint.pprint(SIGUIENTES)
 
 """
 se supone la convension de que las reglas con epsilon unico
@@ -55,8 +56,8 @@ def fix_easy_left_recursion(grammar):
 class TopDownSyntacticParser:
     def __init__(self, grammar):
         self.grammar    = grammar
-        self.nont_set   = set(GRAMMAR.keys())
-        self.nont_rev   = list(GRAMMAR.keys())
+        self.nont_set   = set(grammar.keys())
+        self.nont_rev   = list(grammar.keys())
         self.PRIMEROS   = {}
         self.SIGUIENTES = {}
 
@@ -103,31 +104,37 @@ class TopDownSyntacticParser:
                         ans.update(self.p(alpha[1:]))
                 return list(ans)
 
-def siguientes():
-    for X in NONT:
-        SIGUIENTES[X].update(s(X))
-    pprint.pprint(SIGUIENTES)
+    """
+    desde aquí se lanza la funcion recursiva para el calculo de los
+    SEGUNDOS
+    """
+    def compute_siguientes(self):
+        for X in self.nont_set:
+            self.SIGUIENTES[X].update(self.s(X))
+        return self.SIGUIENTES
 
-"""
-param nont: a nonterminal symbol
-returns : the siguientes set
-"""
-# TODO this algorithm does not work well with left recursive grammars, ex. 0
-def s(nont):
-    ans = set()
-    if nont == ORD[0]:
-        ans.add('$')
-    # iterate over all rules searching for 'nont'
-    for X in NONT:
-        for rule in GRAMMAR[X]:
-            if rule.__contains__(nont):
-                loc = rule.index(nont)
-                prim_beta = set(p(rule[loc + 1:]))
-                if 'e' in prim_beta:
-                    prim_beta -= {'e'}
-                    ans.update(s(X))
-                ans.update(prim_beta)
-    return list(ans)
+    """
+    param nont: a nonterminal symbol
+    returns : the siguientes set
+    """
+    # TODO this algorithm does not work well with left recursive grammars, ex. 0
+    def s(self, nont):
+        ans = set()
+        # si es el simbolo inicial
+        if nont == self.nont_rev[-1]:
+            ans.add('$')
+        # iterate over all rules searching for 'nont'
+        for X in self.nont_set:
+            for rule in self.grammar[X]:
+                if rule.__contains__(nont):
+                    loc = rule.index(nont)
+                    # primeros de beta
+                    prim_beta = set(self.p(rule[loc + 1:]))
+                    if 'e' in prim_beta:
+                        prim_beta -= {'e'}
+                        ans.update(self.s(X))
+                    ans.update(prim_beta)
+        return list(ans)
 
 def get_grammar(sample):
     if sample == 0:
@@ -189,14 +196,6 @@ def get_grammar(sample):
         }
 
 if __name__ == "__main__":
-    GRAMMAR = get_grammar(0)
-    NONT = set(GRAMMAR.keys())
-    ORD = list(GRAMMAR.keys())
-    PRIMEROS = {}
-    SIGUIENTES = {}
-    for X in NONT:
-        PRIMEROS[X] = set()
-        SIGUIENTES[X] = set()
     main()
     
 
