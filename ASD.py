@@ -5,48 +5,103 @@ import pprint
 ##########################################################
 
 def main():
-    primeros()
-    siguientes()
+    # primeros()
+    # siguientes()
 
-"""
-a root function for primeros computation
-"""
-def primeros():
-    # Reverse the dictionary to process first the rules
-    # with lower precedence
-    nont = list(ORD)
-    nont.reverse()
-    for X in nont:
-        # rule 2c
-        for alpha in GRAMMAR[X]:
-            PRIMEROS[X].update(p(alpha))
-    
+    parser = TopDownSyntacticParser(GRAMMAR)
+    PRIMEROS = parser.compute_primeros()
     pprint.pprint(PRIMEROS)
 
 """
-Return a list containing the primeros for alpha
-param alpha : a sequence of terminal and non terminals
-returs : the set of primeros
+se supone la convension de que las reglas con epsilon unico
+se escriben siempre al final
 """
-def p(alpha):
-    if len(alpha) == 0:
-        return ['e']
+# TODO completar el metodo buscando recursivamente en profundidad
+def fix_easy_left_recursion(grammar):
+    nont_with_recusion = {}
 
-    if alpha[0] == 'e':
-        return ['e']
-    else:
-        a1 = alpha[0]
-        if a1 not in NONT:
-            return [a1]
-        else:
-            ans = set(PRIMEROS[a1])
-            if 'e' in ans:
-                ans -= {'e'}
-                if len(alpha) == 1:
-                    ans.add('e')
+    # buscar recusiones por izquierda y si existe epsilon en 
+    # ese no terminal X para solucionar facil
+    for X, rules in grammar.items():
+        wait_e = False
+        i = 0
+        for alpha in rules:
+            # hay recursion por izquierda
+            if alpha[0] == X:
+                wait_e = True
+                print(X + ' has left recursion')
+                # regla a corregir
+                if X not in nont_with_recusion:
+                    nont_with_recusion[X] = [i]
                 else:
-                    ans.update(p(alpha[1:]))
-            return list(ans)
+                    nont_with_recusion[X].append[i]
+
+            if wait_e and alpha[0] == 'e':
+                wait_e = False
+                break
+
+            # ubicacion regla, dentro de reglas
+            i += 1
+        
+        # no puedo arreglar facilmente no hay epsilon para
+        # suprimir la recursion
+        if wait_e:
+            raise EnvironmentError
+
+    # corregir la recursividad por izquierda
+    for X, loc in nont_with_recusion.items():
+        print(X, loc)
+        
+class TopDownSyntacticParser:
+    def __init__(self, grammar):
+        self.grammar    = grammar
+        self.nont_set   = set(GRAMMAR.keys())
+        self.nont_rev   = list(GRAMMAR.keys())
+        self.PRIMEROS   = {}
+        self.SIGUIENTES = {}
+
+        # initializations
+        self.nont_rev.reverse()
+        for X in self.nont_set:
+            self.PRIMEROS[X] = set()
+            self.SIGUIENTES[X] = set()
+
+    """
+    a root function for primeros computation
+    """
+    def compute_primeros(self):
+        # Reverse the dictionary to process first the rules
+        # with lower precedence
+        for X in self.nont_rev:
+            # rule 2c
+            for alpha in self.grammar[X]:
+                self.PRIMEROS[X].update(self.p(alpha))
+        return self.PRIMEROS
+
+    """
+    Return a list containing the primeros for alpha
+    param alpha : a sequence of terminal and non terminals
+    returs : the set of primeros
+    """
+    def p(self, alpha):
+        if len(alpha) == 0:
+            return ['e']
+
+        if alpha[0] == 'e':
+            return ['e']
+        else:
+            a1 = alpha[0]
+            if a1 not in self.nont_set:
+                return [a1]
+            else:
+                ans = set(self.PRIMEROS[a1])
+                if 'e' in ans:
+                    ans -= {'e'}
+                    if len(alpha) == 1:
+                        ans.add('e')
+                    else:
+                        ans.update(self.p(alpha[1:]))
+                return list(ans)
 
 def siguientes():
     for X in NONT:
@@ -85,7 +140,8 @@ def get_grammar(sample):
             ],
             'A': [
                 ['B', 'C', 'D'],
-                ['A', 'e'],
+                ['A', 'tres'],
+                ['e'],
             ],
             'B': [
                 ['D', 'cuatro', 'C', 'tres'],
@@ -133,7 +189,7 @@ def get_grammar(sample):
         }
 
 if __name__ == "__main__":
-    GRAMMAR = get_grammar(1)
+    GRAMMAR = get_grammar(0)
     NONT = set(GRAMMAR.keys())
     ORD = list(GRAMMAR.keys())
     PRIMEROS = {}
