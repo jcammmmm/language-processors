@@ -108,7 +108,7 @@ def grammar_from_file(filename):
         if not line:
             break
 
-        if line[0] == '#':
+        if line[0] == '$' || line[0] == '~':
             continue
         else:
             X, rule = line.split(':')

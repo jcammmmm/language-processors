@@ -1,0 +1,221 @@
+$ NO TERMINALES en mayuscula
+$ terminales en minuscula
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ Estructura del programa
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+PRG : DCL funcion_principal LGC finprincipal DCL
+DCL : FUN DCL
+DCL : EST DCL
+DCL : e
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 0. expresiones, bloques y comandos
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+~~ Tipos
+TYP : booleano
+TYP : caracter
+TYP : entero
+TYP : real
+TYP : cadena
+~~ Literales
+LIT : verdadero
+LIT : falso
+LIT : tk_caracter
+LIT : tk_entero
+LIT : tk_real
+LIT : tk_cadena
+~~ Expresiones
+MEX : matematical expression
+BEX : boolean expression
+~~ Comandos
+CMD : CM0 pyc
+CM0 : RET
+CM0 : ROM
+CM0 : DVR
+CM0 : CLL
+CM0 : IDA
+CM0 : INP
+CM0 : OUP
+CM0 : e
+~~ Logica
+LGC : CND
+LGC : LUP
+LGC : SEL
+$$ TODO common factors (retornar)
+~~ Retornos
+RET : retornar id
+RET : retornar
+ROM : romper
+~~ Llamados
+$$ TODO common factors (SMT)
+CLL : id tk_par_der ARG tk_par_izq
+ARG : SMT
+ARG : SMT tk_coma SMT
+ARG : e
+SMT : LIT
+SMT : id
+~~ Bloque
+BLK : CMD BLK
+BLK : LGC BLK
+BLK : e
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 1. Declaracion de variables
+$$ TODO common factors
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+DVR : booleano id tk_pyc
+DVR : booleano id tk_asig verdadero tk_pyc
+DVR : booleano id tk_asig falso tk_pyc
+DVR : caracter id tk_pyc tk_pyc
+DVR : caracter id tk_asig tk_caracter tk_pyc
+DVR : entero id tk_pyc
+DVR : entero id tk_asig tk_entero tk_pyc
+DVR : real id tk_asig tk_pyc
+DVR : real id tk_asig tk_real tk_pyc
+DVR : cadena id tk_pyc
+DVR : cadena id tk_asig tk_cadena tk_pyc
+$$ TODO es un error sintactico o gramatical poner el literal que no es... ?
+DVR : TYP IDA
+IDA : id ASN
+ASN : tk_coma ASN
+ASN : tk_asig LIT ASN
+ASN : AS0 
+ASN : e 
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 3. Lectura de datos
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+INP : leer tk_par_izq id tk_par_der
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 4. Imprimir
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ TODO common factors (tk_cadena, id, MEX)
+OUP : imprimir tk_par_izq CTT tk_par_der
+CTT : tk_cadena
+CTT : tk_cadena tk_coma CTT
+CTT : id
+CTT : id tk_coma CTT
+CTT : MEX
+CTT : MEX tk_coma CTT
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 5. Condicionales
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ TODO common factors (si tk_par_izq)
+CND : si tk_par_izq BEX tk_par_der entonces BLK fin_si
+CND : si tk_par_izq BEX tk_par_der entonces BLK si_no BLK fin_si
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 6. Ciclos
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+~~ 6.1 Mientras
+LUP : mientras tk_par_izq BEX tk_par_der hacer BLK fin_mientras
+~~ 6.2 Para
+LUP : para tk_par_izq INI tk_pyc BEX tk_pyc STP tk_par_der hacer BLK fin_para
+INI : DVR
+INI : IDA
+STP : tk_real
+STP : tk_entero
+STP : id
+~~ 6.3 hacer-mientras
+LUP : hacer BLK mientras tk_par_izq BEX tk_par_der tk_pyc
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 7. Seleccion multiple
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SEL : seleccionar tk_par_izq id tk_par_der entre OPC fin_seleccionar
+OPC : CAS OPC
+OPC : DEF
+CAS : caso tk_entero tk_dosp BLK
+DEF : defecto tk_dosp BLK
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 8. Estructuras de datos
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+EST : estructura id ATR fin_estructura
+ATR : DVR tk_pyc ATR
+ATR : id id tk_pyc ATR
+ATR : e
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$ 9. Funciones
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+FUN : funcion TYP id tk_par_izq PMT tk_par_der hacer BLK fin_funcion
+PMT : TYP id PM1
+PMT : e
+PM1 : tk_coma TYP id PM1
+PM1 : e
+
+
+
+
+$ símbolos/token	Token
+$ +	                tk_mas
+$ -	                tk_menos
+$ *	                tk_mult
+$ /	                tk_div
+$ %	                tk_mod
+$ =	                tk_asig
+$ <	                tk_menor
+$ >	                tk_mayor
+$ <=	            tk_menor_igual
+$ >=	            tk_mayor_igual
+$ ==	            tk_igual
+$ &&	            tk_y
+$ ||	            tk_o
+$ !=	            tk_dif
+$ !	                tk_neg
+$ :	                tk_dosp
+$ ;	                tk_pyc
+$ ,	                tk_coma
+$ .	                tk_punto
+$ (	                tk_par_izq
+$ )	                tk_par_der
+$ identificador	    id
+$ valor_entero	    tk_entero
+$ valor_real	    tk_real
+$ valor_caracter	tk_caracter
+$ valor_cadena	    tk_cadena
+$ funcion_principal	funcion_principal
+$ fin_principal	    fin_principal
+$ leer	            leer
+$ imprimir	        imprimir
+$ booleano	        booleano 
+$ caracter	        caracter
+$ entero	        entero
+$ real	            real
+$ cadena	        cadena
+$ si	            si
+$ entonces	        entonces
+$ fin_si	        fin_si
+$ si_no	            si_no
+$ mientras	        mientras
+$ hacer	            hacer
+$ fin_mientras	    fin_mientras
+$ para	            para
+$ fin_para	        fin_para
+$ seleccionar	    seleccionar
+$ entre	            entre
+$ caso	            caso
+$ romper	        romper
+$ defecto	        defecto
+$ fin_seleccionar	fin_seleccionar
+$ estructura	    estructura
+$ fin_estructura	fin_estructura
+$ funcion	        funcion
+$ fin_funcion	    fin_funcion
+$ retornar	        retornar
+$ falso	            falso
+$ verdadero	        verdadero
+$ EOF	            EOF
