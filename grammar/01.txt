@@ -1,0 +1,8 @@
+# tomado de 08@31
+A : B C
+A : ant A all
+B : big C
+B : bus A boss
+B : e
+C : cat
+C : cow

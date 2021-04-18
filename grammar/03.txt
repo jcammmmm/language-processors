@@ -1,0 +1,11 @@
+# ejercicio 2 en 03@35
+S : A B uno
+A : dos B
+A : e
+B : C D
+B : tres
+B : e
+C : cuatro A B
+C : cinco
+D : seis
+D : e

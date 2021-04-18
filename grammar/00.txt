@@ -1,0 +1,7 @@
+# de 08@19
+A : B C
+A : bad
+B : big C boss
+B : e
+C : cat
+C : cow
