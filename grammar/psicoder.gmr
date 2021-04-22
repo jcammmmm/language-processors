@@ -20,17 +20,37 @@ TYP : entero
 TYP : real
 TYP : cadena
 ~~ Literales
-LIT : verdadero
-LIT : falso
+BUL : verdadero
+BUL : falso
+NUM : tk_entero
+NUM : tk_real
 LIT : tk_caracter
-LIT : tk_entero
-LIT : tk_real
 LIT : tk_cadena
+LIT : NUM
+LIT : BUL
+~ Operadores Unario y Binarios
+OPU : tk_neg
+OPB : tk_mas
+OPB : tk_menos
+OPB : tk_mult
+OPB : tk_div
+OPB : tk_mod
+OPB : tk_menor
+OPB : tk_mayor
+OPB : tk_menor_igual
+OPB : tk_mayor_igual
+OPB : tk_y
+OPB : tk_o
+OPB : tk_dif
 ~~ Expresiones
-MEX : matematical expression
-BEX : boolean expression
+EXP : OPU EXP
+EXP : tk_par_izq LIT OPB EXP tk_par_der
+EXP : LIT OPB EXP
+EXP : LIT
+EXP : e
+
 ~~ Comandos
-CMD : CM0 pyc
+CMD : CM0 tk_pyc
 CM0 : RET
 CM0 : ROM
 CM0 : DVR
@@ -62,29 +82,17 @@ BLK : LGC BLK
 BLK : e
 
 
-
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 1. Declaracion de variables
 $$ TODO common factors
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-DVR : booleano id tk_pyc
-DVR : booleano id tk_asig verdadero tk_pyc
-DVR : booleano id tk_asig falso tk_pyc
-DVR : caracter id tk_pyc tk_pyc
-DVR : caracter id tk_asig tk_caracter tk_pyc
-DVR : entero id tk_pyc
-DVR : entero id tk_asig tk_entero tk_pyc
-DVR : real id tk_asig tk_pyc
-DVR : real id tk_asig tk_real tk_pyc
-DVR : cadena id tk_pyc
-DVR : cadena id tk_asig tk_cadena tk_pyc
-$$ TODO es un error sintactico o gramatical poner el literal que no es... ?
 DVR : TYP IDA
-IDA : id ASN
-ASN : tk_coma ASN
-ASN : tk_asig LIT ASN
-ASN : AS0 
-ASN : e 
+IDA : id tk_asig LIT ASG
+IDA : id ASG
+ASG : tk_coma id tk_asig LIT ASG
+ASG : tk_coma id ASG
+ASG : tk_pyc
+
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 3. Lectura de datos
@@ -95,38 +103,38 @@ INP : leer tk_par_izq id tk_par_der
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 4. Imprimir
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ TODO common factors (tk_cadena, id, MEX)
+$$ TODO common factors (tk_cadena, id, EXP)
 OUP : imprimir tk_par_izq CTT tk_par_der
 CTT : tk_cadena
 CTT : tk_cadena tk_coma CTT
 CTT : id
 CTT : id tk_coma CTT
-CTT : MEX
-CTT : MEX tk_coma CTT
+CTT : EXP
+CTT : EXP tk_coma CTT
 
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 5. Condicionales
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ TODO common factors (si tk_par_izq)
-CND : si tk_par_izq BEX tk_par_der entonces BLK fin_si
-CND : si tk_par_izq BEX tk_par_der entonces BLK si_no BLK fin_si
+CND : si tk_par_izq PEX tk_par_der entonces BLK fin_si
+CND : si tk_par_izq PEX tk_par_der entonces BLK si_no BLK fin_si
 
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 6. Ciclos
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 ~~ 6.1 Mientras
-LUP : mientras tk_par_izq BEX tk_par_der hacer BLK fin_mientras
+LUP : mientras tk_par_izq EXP tk_par_der hacer BLK fin_mientras
 ~~ 6.2 Para
-LUP : para tk_par_izq INI tk_pyc BEX tk_pyc STP tk_par_der hacer BLK fin_para
+LUP : para tk_par_izq INI tk_pyc EXP tk_pyc STP tk_par_der hacer BLK fin_para
 INI : DVR
 INI : IDA
 STP : tk_real
 STP : tk_entero
 STP : id
 ~~ 6.3 hacer-mientras
-LUP : hacer BLK mientras tk_par_izq BEX tk_par_der tk_pyc
+LUP : hacer BLK mientras tk_par_izq EXP tk_par_der tk_pyc
 
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$

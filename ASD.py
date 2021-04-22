@@ -5,7 +5,7 @@ import pprint
 ##########################################################
 
 def main():
-    grammar, nont_ord = grammar_from_file("03")
+    grammar, nont_ord = grammar_from_file("psicoder")
     asd = TopDownSyntacticParser(grammar, nont_ord)
     PRIMEROS = asd.compute_primeros()
     pprint.pprint(PRIMEROS)
@@ -99,7 +99,7 @@ class TopDownSyntacticParser:
 Lee un archivo y crea un diccionario que representa esa gramatica
 """
 def grammar_from_file(filename):
-    f = open("grammar/" + filename + ".txt", "r")
+    f = open("grammar/" + filename + ".gmr", "r")
     grammar = {}
     nont_ord = []
     nont_set = set()
@@ -108,7 +108,7 @@ def grammar_from_file(filename):
         if not line:
             break
 
-        if line[0] == '$' || line[0] == '~':
+        if line[0] == '$' or line[0] == '~' or line[0] == '\n':
             continue
         else:
             X, rule = line.split(':')
