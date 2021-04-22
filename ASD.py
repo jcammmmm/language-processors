@@ -5,12 +5,11 @@ import pprint
 ##########################################################
 
 def main():
-    grammar, nont_ord = grammar_from_file("psicoder")
+    grammar, nont_ord = grammar_from_file("incr")
     asd = TopDownSyntacticParser(grammar, nont_ord)
-    PRIMEROS = asd.compute_primeros()
-    pprint.pprint(PRIMEROS)
-    SIGUIENTES = asd.compute_siguientes()
-    pprint.pprint(SIGUIENTES)
+    print("PREDICION")
+    pprint.pprint(asd.get_prediction_set())
+
         
 class TopDownSyntacticParser:
     def __init__(self, grammar, nont_ord):
@@ -19,6 +18,7 @@ class TopDownSyntacticParser:
         self.nont_rev   = nont_ord
         self.PRIMEROS   = {}
         self.SIGUIENTES = {}
+        self.PRED       = []
 
         # initializations
         self.nont_rev.reverse()
@@ -27,15 +27,32 @@ class TopDownSyntacticParser:
             self.SIGUIENTES[X] = set()
 
     """
-    a root function for primeros computation
+    computes de prediction set for every rule
     """
-    def compute_primeros(self):
+    def get_prediction_set(self):
+        self.__compute_primeros()
+        self.__compute_siguientes()
+        self.PRED = []
+        for X in self.nont_rev:
+            for alpha in self.grammar[X]:
+                prim = set(self.__p(alpha))
+                if 'e' in prim:
+                    prim -= {'e'}
+                    prim.update(self.SIGUIENTES[X])
+                self.PRED.append((prim, X, alpha))
+        return self.PRED
+                
+    
+    """
+    a root function for primeros computation for every rule
+    """
+    def __compute_primeros(self):
         # Reverse the dictionary to process first the rules
         # with lower precedence
         for X in self.nont_rev:
             # rule 2c
             for alpha in self.grammar[X]:
-                self.PRIMEROS[X].update(self.p(alpha))
+                self.PRIMEROS[X].update(self.__p(alpha))
         return self.PRIMEROS
 
     """
@@ -43,7 +60,7 @@ class TopDownSyntacticParser:
     param alpha : a sequence of terminal and non terminals
     returs : the set of primeros
     """
-    def p(self, alpha):
+    def __p(self, alpha):
         if len(alpha) == 0:
             return ['e']
 
@@ -60,16 +77,16 @@ class TopDownSyntacticParser:
                     if len(alpha) == 1:
                         ans.add('e')
                     else:
-                        ans.update(self.p(alpha[1:]))
+                        ans.update(self.__p(alpha[1:]))
                 return list(ans)
 
     """
     desde aquí se lanza la funcion recursiva para el calculo de los
-    SEGUNDOS
+    SEGUNDOS por cada no terminal
     """
-    def compute_siguientes(self):
+    def __compute_siguientes(self):
         for X in self.nont_rev:
-            self.SIGUIENTES[X].update(self.s(X))
+            self.SIGUIENTES[X].update(self.__s(X))
         return self.SIGUIENTES
 
     """
@@ -77,7 +94,7 @@ class TopDownSyntacticParser:
     returns : the siguientes set
     """
     # TODO this algorithm does not work well with left recursive grammars, ex. 0
-    def s(self, nont):
+    def __s(self, nont):
         ans = set()
         # si es el simbolo inicial
         if nont == self.nont_rev[-1]:
@@ -88,10 +105,10 @@ class TopDownSyntacticParser:
                 if rule.__contains__(nont):
                     loc = rule.index(nont)
                     # primeros de beta
-                    prim_beta = set(self.p(rule[loc + 1:]))
+                    prim_beta = set(self.__p(rule[loc + 1:]))
                     if 'e' in prim_beta:
                         prim_beta -= {'e'}
-                        ans.update(self.s(X))
+                        ans.update(self.__s(X))
                     ans.update(prim_beta)
         return list(ans)
 
@@ -108,7 +125,7 @@ def grammar_from_file(filename):
         if not line:
             break
 
-        if line[0] == '$' or line[0] == '~' or line[0] == '\n':
+        if line[0] == '#' or line[0] == '$' or line[0] == '~' or line[0] == '\n':
             continue
         else:
             X, rule = line.split(':')
