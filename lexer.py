@@ -18,8 +18,8 @@ TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
 WRITE_TO_FILE = True
 
 
-def main():
-  sm = StateMachineStdIn()
+def main2():
+  sm = Lexer()
   if WRITE_TO_FILE:
     f = open("out/xx.txt", "w")
   try:
@@ -43,6 +43,15 @@ def main():
   except EOFError:
     pass
 
+def main():
+  sm = Lexer("in/01.txt")
+  while 1:
+    tk = sm.next_token()
+    if tk == '':
+      break
+    print(tk)
+
+
 def write_tokens(file, tokens):
   for tk in tokens:
     file.write(tk)
@@ -53,11 +62,31 @@ def print_tokens(tokens):
     print(tk)
 
 
-class StateMachineStdIn:
-  def __init__(self):
+class Lexer:
+  def __init__(self, filename=None):
     self.line = 0
     self.col = 0
     self.state = 0
+    if filename != None:
+      self.token_buffer = deque()
+      self.filename = filename
+      self.src = open(filename, 'r')
+
+  """
+  it returns '' (EOF) when the file parsing was completed
+  """
+  def next_token(self):
+    if len(self.token_buffer) == 0:
+      tokens = []
+      while len(tokens) == 0:
+        code = self.src.readline()
+        if code == '':
+          return ''
+        elif not code.endswith('\n'): # each line must end with nl
+          code = code + '\n'
+        tokens = self.get_tokens(code)
+      self.token_buffer.extend(tokens)
+    return self.token_buffer.popleft()
 
   def get_tokens(self, source_code):
     self.line += 1
@@ -90,49 +119,8 @@ class StateMachineStdIn:
         self.state = 0
     return tokens
 
-class StateMachineFromFile:
-  def __init__(self, filename):
-    self.source = open(filename, 'r')
-    self.in_buffer = deque(self.source.read(10))
-    self.line = 1
-    self.col = 0
-
-  def next_token(self):
-    word = []
-    state = 0
-    while 1:
-      c = self.in_buffer.popleft()
-      self.in_buffer.append(self.source.read(1))
-
-      self.col += 1
-      word.append(c)
-      
-      state, rewind, token = next_state(state, c)
-      line = self.line
-      column = self.col 
-      if c == '\n':
-        self.col = 0
-        self.line += 1
-          
-      if state == 1:
-        for _ in range(rewind):
-          x = word.pop()
-          if x != '\n':
-            self.col -= 1
-            self.in_buffer.appendleft(x)
-        return build_token(token, ''.join(word), line, column - len(word) - rewind + 1)
-      elif state == 0:
-        word.pop()
-      elif state == -1:
-        raise LexicalError(token)
-      elif state == -2:
-        raise EOFReachedError()
-      elif state == -3:
-        word = []
-        state = 0
-
   def turn_off(self):
-    self.source.close()
+    self.src.close()
 
 def build_token(token_type, lexeme, line, column):
   token_id = token_type.value
@@ -163,6 +151,8 @@ must be rewined to the main stream of chars, and the last gives the
 name of the actual recognized token.
 
 A returned state of:
+   3 means that until here our state machine cannot decide
+   2 means identifier
    1 means accept state, a valid token was recognized
    0 means pure blank char (outside comment), initial state
   -1 means Lexical Error.

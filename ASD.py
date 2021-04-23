@@ -1,4 +1,5 @@
 import pprint
+from lexer import Lexer
 
 ##########################################################
 ### FIRST
@@ -39,7 +40,7 @@ class TopDownSyntacticParser:
                 if 'e' in prim:
                     prim -= {'e'}
                     prim.update(self.SIGUIENTES[X])
-                self.PRED.append((prim, X, alpha))
+                self.PRED.append((X, alpha, prim))
         return self.PRED
                 
     

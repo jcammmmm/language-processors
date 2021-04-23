@@ -43,11 +43,11 @@ OPB : tk_y
 OPB : tk_o
 OPB : tk_dif
 ~~ Expresiones
-EXP : OPU EXP
-EXP : tk_par_izq LIT OPB EXP tk_par_der
-EXP : LIT OPB EXP
-EXP : LIT
-EXP : e
+XPR : OPU XPR
+XPR : tk_par_izq LIT OPB XPR tk_par_der
+XPR : LIT OPB XPR
+XPR : LIT
+XPR : e
 
 ~~ Comandos
 CMD : CM0 tk_pyc
@@ -103,14 +103,14 @@ INP : leer tk_par_izq id tk_par_der
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 4. Imprimir
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ TODO common factors (tk_cadena, id, EXP)
+$$ TODO common factors (tk_cadena, id, XPR)
 OUP : imprimir tk_par_izq CTT tk_par_der
 CTT : tk_cadena
 CTT : tk_cadena tk_coma CTT
 CTT : id
 CTT : id tk_coma CTT
-CTT : EXP
-CTT : EXP tk_coma CTT
+CTT : XPR
+CTT : XPR tk_coma CTT
 
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -125,16 +125,16 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 $$ 6. Ciclos
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 ~~ 6.1 Mientras
-LUP : mientras tk_par_izq EXP tk_par_der hacer BLK fin_mientras
+LUP : mientras tk_par_izq XPR tk_par_der hacer BLK fin_mientras
 ~~ 6.2 Para
-LUP : para tk_par_izq INI tk_pyc EXP tk_pyc STP tk_par_der hacer BLK fin_para
+LUP : para tk_par_izq INI tk_pyc XPR tk_pyc STP tk_par_der hacer BLK fin_para
 INI : DVR
 INI : IDA
 STP : tk_real
 STP : tk_entero
 STP : id
 ~~ 6.3 hacer-mientras
-LUP : hacer BLK mientras tk_par_izq EXP tk_par_der tk_pyc
+LUP : hacer BLK mientras tk_par_izq XPR tk_par_der tk_pyc
 
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
