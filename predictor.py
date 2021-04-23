@@ -1,46 +1,65 @@
 import pprint
 from lexer import Lexer
-
-##########################################################
-### FIRST
-##########################################################
+from collections import deque
 
 def main():
-    grammar, nont_ord = grammar_from_file("incr")
-    asd = TopDownSyntacticParser(grammar, nont_ord)
-    print("PREDICION")
-    pprint.pprint(asd.get_prediction_set())
-
-        
-class TopDownSyntacticParser:
+    grammar, nont_ord = grammar_from_file("grammar/incr.gmr")
+    predictor         = Predictor(grammar, nont_ord)
+    lexer             = Lexer("in/01.txt")
+    print(predictor.PRED)
+    
+class Predictor:
+    """
+    Given an ordered grammar, when this class is instanced computes the prediction
+    set for each grammar rule 
+    The attribute 'done' indicates if this Predictor was run already
+    """
     def __init__(self, grammar, nont_ord):
         self.grammar    = grammar
         self.nont_set   = set(nont_ord)
-        self.nont_rev   = nont_ord
+        self.nont_rev   = list(nont_ord)
+        self.done       = False
         self.PRIMEROS   = {}
         self.SIGUIENTES = {}
-        self.PRED       = []
+        self.PRED       = {}
 
         # initializations
         self.nont_rev.reverse()
         for X in self.nont_set:
-            self.PRIMEROS[X] = set()
-            self.SIGUIENTES[X] = set()
+            self.PRIMEROS[X]    = set()
+            self.SIGUIENTES[X]  = set()
+            self.PRED[X]        = list()
+
+        self.__get_prediction_set()
+
+    def get_rule(self, token):
+        terminal = self.__to_terminal(token)
+        for pred in self.PRED:
+            if terminal in pred[2]:
+                return (pred[0], pred[1])
+        raise SyntaxError()
+
+    def __to_terminal(self, token):
+        return token.split(',')[0][1:]
+
 
     """
     computes de prediction set for every rule
     """
-    def get_prediction_set(self):
+    def __get_prediction_set(self):
+        if self.done:
+            return self.PRED
+
         self.__compute_primeros()
         self.__compute_siguientes()
-        self.PRED = []
         for X in self.nont_rev:
             for alpha in self.grammar[X]:
                 prim = set(self.__p(alpha))
                 if 'e' in prim:
                     prim -= {'e'}
                     prim.update(self.SIGUIENTES[X])
-                self.PRED.append((X, alpha, prim))
+                self.PRED[X].append((alpha, prim))
+        self.done = True
         return self.PRED
                 
     
@@ -117,7 +136,7 @@ class TopDownSyntacticParser:
 Lee un archivo y crea un diccionario que representa esa gramatica
 """
 def grammar_from_file(filename):
-    f = open("grammar/" + filename + ".gmr", "r")
+    f = open(filename, "r")
     grammar = {}
     nont_ord = []
     nont_set = set()
@@ -186,6 +205,4 @@ def fix_easy_left_recursion(grammar):
 
     # corregir la recursividad por izquierda
     for X, loc in nont_with_recusion.items():
-        print(X, loc)    
-
-
+        print(X, loc)

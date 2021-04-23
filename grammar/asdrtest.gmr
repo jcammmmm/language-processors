@@ -1,0 +1,8 @@
+A : B token C
+A : H token D
+A : X token G
+B : token token 
+B : token X
+B : token Z
+B : token W
+B : token S

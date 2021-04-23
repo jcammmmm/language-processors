@@ -44,9 +44,9 @@ def main2():
     pass
 
 def main():
-  sm = Lexer("in/01.txt")
+  lexer = Lexer("in/01.txt")
   while 1:
-    tk = sm.next_token()
+    tk = lexer.next_token()
     if tk == '':
       break
     print(tk)
