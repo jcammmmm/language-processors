@@ -17,7 +17,17 @@ TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
 
 WRITE_TO_FILE = True
 
+def main():
+  lexer = Lexer("in/01.txt")
+  while 1:
+    tk = lexer.next_token()
+    if tk == '':
+      break
+    print(tk)
 
+"""
+Usage from stdin
+"""
 def main2():
   sm = Lexer()
   if WRITE_TO_FILE:
@@ -42,15 +52,6 @@ def main2():
     print("EOF reached.")
   except EOFError:
     pass
-
-def main():
-  lexer = Lexer("in/01.txt")
-  while 1:
-    tk = lexer.next_token()
-    if tk == '':
-      break
-    print(tk)
-
 
 def write_tokens(file, tokens):
   for tk in tokens:

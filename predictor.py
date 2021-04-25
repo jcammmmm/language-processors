@@ -132,37 +132,6 @@ class Predictor:
                     ans.update(prim_beta)
         return list(ans)
 
-"""
-Lee un archivo y crea un diccionario que representa esa gramatica
-"""
-def grammar_from_file(filename):
-    f = open(filename, "r")
-    grammar = {}
-    nont_ord = []
-    nont_set = set()
-    while True:
-        line = f.readline()
-        if not line:
-            break
-
-        if line[0] == '#' or line[0] == '$' or line[0] == '~' or line[0] == '\n':
-            continue
-        else:
-            X, rule = line.split(':')
-            
-            X = X.strip()
-            if X not in nont_set:
-                nont_ord.append(X)
-                nont_set.add(X)
-
-            r = rule.strip().split(' ')
-            if X in grammar:
-                grammar[X].append(r)
-            else:
-                grammar[X] = [r]
-
-    f.close()
-    return grammar, nont_ord 
 
 if __name__ == "__main__":
     main()
