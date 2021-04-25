@@ -5,12 +5,13 @@ import asdr
 
 def main():
     gen_asdr("grammar/incr.gmr")
-    globals.init("in/01.psi")
+    globals.init() #"in/01.psi")
     globals.token = get_tk(globals.lexer.next_token())
     asdr.begin()
     if (globals.token != ''):
         raise SyntaxError("NOT EOF")
-
+    else:
+        print("El analisis sintactico ha finalizado exitosamente.")
 
 def match(expected_token):
     if globals.token == expected_token:

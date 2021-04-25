@@ -17,7 +17,7 @@ TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
 
 WRITE_TO_FILE = True
 
-def main():
+def main2():
   lexer = Lexer("in/01.txt")
   while 1:
     tk = lexer.next_token()
@@ -28,7 +28,7 @@ def main():
 """
 Usage from stdin
 """
-def main2():
+def main():
   sm = Lexer()
   if WRITE_TO_FILE:
     f = open("out/xx.txt", "w")
@@ -68,10 +68,12 @@ class Lexer:
     self.line = 0
     self.col = 0
     self.state = 0
+    self.readline = lambda: self.readline_stdin()
+    self.token_buffer = deque()
     if filename != None:
-      self.token_buffer = deque()
       self.filename = filename
       self.src = open(filename, 'r')
+      self.readline = lambda: self.src.readline()
 
   """
   it returns '' (EOF) when the file parsing was completed
@@ -80,7 +82,7 @@ class Lexer:
     if len(self.token_buffer) == 0:
       tokens = []
       while len(tokens) == 0:
-        code = self.src.readline()
+        code = self.readline()
         if code == '':
           return ''
         elif not code.endswith('\n'): # each line must end with nl
@@ -88,6 +90,12 @@ class Lexer:
         tokens = self.get_tokens(code)
       self.token_buffer.extend(tokens)
     return self.token_buffer.popleft()
+
+  def readline_stdin(self):
+    try:
+      return input() + '\n'
+    except KeyboardInterrupt:
+      return '' # EOF
 
   def get_tokens(self, source_code):
     self.line += 1
