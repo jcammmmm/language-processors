@@ -8,7 +8,7 @@ def PRG():
   if globals.token == 'funcion_principal':
     match('funcion_principal')
     XPR()
-    match('finprincipal')
+    match('fin_principal')
   else:
     raise SyntaxError('funcion_principal')
 

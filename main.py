@@ -4,22 +4,26 @@ import globals
 import asdr
 
 def main():
-    globals.init()
-    # gen_asdr("grammar/incr.gmr")
-    lex = Lexer("in/01.psi")
-    while 1:
-        globals.token = get_tk(lex.next_token())
-        asdr.begin()
+    gen_asdr("grammar/incr.gmr")
+    globals.init("in/01.psi")
+    globals.token = get_tk(globals.lexer.next_token())
+    asdr.begin()
+    if (globals.token != ''):
+        raise SyntaxError("NOT EOF")
 
-def match(token):
-    pass
 
-def get_tk(token):
+def match(expected_token):
+    if globals.token == expected_token:
+        globals.token = get_tk(globals.lexer.next_token())
+    else:
+        raise SyntaxError(expected_token)
+
+def get_tk(lexer_token):
     """
-    it is supposed that the token has the following form:
+    it is supposed that the lexer_token has the following form:
     <token_name,num,num>
     """
-    return token.split(',')[0][1:]
+    return lexer_token.split(',')[0][1:]
 
 if __name__ == "__main__":
     main() 

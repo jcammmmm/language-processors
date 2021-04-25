@@ -1,4 +1,4 @@
-PRG : funcion_principal XPR finprincipal
+PRG : funcion_principal XPR fin_principal
 XPR : imprimir tk_par_izq tk_entero tk_mas tk_entero tk_par_der tk_pyc
 
 $ símbolos/token	Token
