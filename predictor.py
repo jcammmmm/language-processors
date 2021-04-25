@@ -1,12 +1,6 @@
 import pprint
 from lexer import Lexer
 from collections import deque
-
-def main():
-    grammar, nont_ord = grammar_from_file("grammar/incr.gmr")
-    predictor         = Predictor(grammar, nont_ord)
-    lexer             = Lexer("in/01.txt")
-    print(predictor.PRED)
     
 class Predictor:
     """
@@ -114,7 +108,7 @@ class Predictor:
     returns : the siguientes set
     """
     # TODO this algorithm does not work well with left recursive grammars, ex. 0
-    def __s(self, nont):
+    def __s(self, nont, recursive=True):
         ans = set()
         # si es el simbolo inicial
         if nont == self.nont_rev[-1]:
@@ -126,9 +120,9 @@ class Predictor:
                     loc = rule.index(nont)
                     # primeros de beta
                     prim_beta = set(self.__p(rule[loc + 1:]))
-                    if 'e' in prim_beta:
+                    if recursive and 'e' in prim_beta:
                         prim_beta -= {'e'}
-                        ans.update(self.__s(X))
+                        ans.update(self.__s(X, False))
                     ans.update(prim_beta)
         return list(ans)
 
