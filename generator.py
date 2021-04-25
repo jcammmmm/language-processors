@@ -2,12 +2,12 @@ from predictor import Predictor
 from pprint import pprint
 from string import Template
 
-TOKEN_FUN = "globals.token"
+TOKEN_FUN = "globals.token.id"
 EMPAR_FUN = "match"
 TAB       = "  "
 
 def main():
-    gen_asdr("grammar/02.gmr")
+    gen_asdr("grammar/incr.gmr")
 
 def get_pred_test():
     return {

@@ -18,7 +18,7 @@ TK_ID_CMMT_BEGIN  = TK_ID_TYPES_BEGIN + 2*TK_DELTA_ID
 WRITE_TO_FILE = True
 
 def main2():
-  lexer = Lexer("in/01.txt")
+  lexer = Lexer("in/04.psi")
   while 1:
     tk = lexer.next_token()
     if tk == '':
@@ -55,7 +55,7 @@ def main():
 
 def write_tokens(file, tokens):
   for tk in tokens:
-    file.write(tk)
+    file.write(tk.__str__())
     file.write('\n')
 
 def print_tokens(tokens):
@@ -114,7 +114,7 @@ class Lexer:
           x = word.pop()
           self.col -= 1
           code.append(x)
-        tokens.append(build_token(token, ''.join(word), self.line, self.col - len(word) + 1))
+        tokens.append(Token(token, ''.join(word), self.line, self.col - len(word) + 1))
         self.state = 0
         word = []
       elif self.state == 0:
@@ -131,27 +131,39 @@ class Lexer:
   def turn_off(self):
     self.src.close()
 
-def build_token(token_type, lexeme, line, column):
-  token_id = token_type.value
-  token = ""
-  if token_type == Token.raw_word:
-    if lexeme in RESERVED_WORDS:
-      # reserved words
-      token = "{}".format(lexeme)
+class Token:
+  def __init__(self, token_type, lexeme, line, column):
+    if token_type == Term.raw_word:
+      if lexeme in RESERVED_WORDS:
+        self.type = Term.reserved_word
+        self.id = lexeme
+      else: 
+        self.type = Term.identifier
+        self.id = Term.identifier.name
     else:
-      # identifiers
-      token = "id,{}".format(lexeme)
-  elif TK_ID_TYPES_BEGIN <= token_id and token_id <= TK_DELTA_ID + 100:
-    # types
-    token = "{},{}".format(token_type.name, lexeme)
-  elif TK_ID_OPS_BEGIN <= token_id and token_id <= TK_ID_OPS_BEGIN + 100:
-    # operators and symbols
-    token = "{}".format(token_type.name)
-  
-  token = "<{},{},{}>".format(token, line, column)
-  return token 
+      self.type = token_type
+      self.id = self.type.name
+    self.lexeme = lexeme
+    self.line = line
+    self.column = column
 
+  def __repr__(self):
+    token_id = self.type.value
+    lexeme = self.lexeme
+    token = ""
+    if self.type == Term.reserved_word:
+        token = "{}".format(lexeme)
+    elif self.type == Term.identifier:
+        token = "id,{}".format(lexeme)
+    elif TK_ID_TYPES_BEGIN <= token_id and token_id <= TK_DELTA_ID + 100:
+      # types
+      token = "{},{}".format(self.id, lexeme)
+    elif TK_ID_OPS_BEGIN <= token_id and token_id <= TK_ID_OPS_BEGIN + 100:
+      # operators and symbols
+      token = "{}".format(self.id)
     
+    return  "<{},{},{}>".format(token, self.line, self.column)
+
 
 """
 returns a tuple composed of three integer. The first indicates the 
@@ -170,7 +182,7 @@ A returned state of:
 """
 def next_state(state, c):
   backw = 0
-  token = Token.no_token
+  token = Term.no_token
   if state == 0:
     if re.match(ONLY_LETTERS, c):
       state = 2
@@ -231,7 +243,7 @@ def next_state(state, c):
     else:
       state = 1
       backw = 1
-      token = Token.raw_word
+      token = Term.raw_word
   elif state == 3:
     if re.match(r"\d", c):
       state = 3
@@ -240,24 +252,24 @@ def next_state(state, c):
     else:
       state = 1
       backw = 1
-      token = Token.tk_entero
+      token = Term.tk_entero
   elif state == 4:
     if re.match(r"\d", c):
       state = 5
     else:
       state = 1
       backw = 2
-      token = Token.tk_entero
+      token = Term.tk_entero
   elif state == 5:
     if re.match(r"\d", c):
       state = 5
     else:
       state = 1
       backw = 1
-      token = Token.tk_real
+      token = Term.tk_real
   elif state == 6:
       state = 1
-      token = Token.tk_menos
+      token = Term.tk_menos
       backw = 1
   elif state == 7:
     if re.match(ANYVALIDCHAR, c) or c == ' ':
@@ -267,7 +279,7 @@ def next_state(state, c):
   elif state == 8:
     if c == '\'':
       state = 1
-      token = Token.tk_caracter
+      token = Term.tk_caracter
     elif EOF == c:
       # by specification, ' cannot stay never alone
       state = -1
@@ -277,7 +289,7 @@ def next_state(state, c):
   elif state == 9:
     if c == '"':
       state = 1
-      token = Token.tk_cadena
+      token = Term.tk_cadena
     elif EOF == c:
       # by specification, " cannot stay never alone
       state = -1
@@ -292,85 +304,85 @@ def next_state(state, c):
   elif state == 10:
     if c == '=':
       state = 1
-      token = Token.tk_menor_igual
+      token = Term.tk_menor_igual
     else:
       state = 1
-      token = Token.tk_menor
+      token = Term.tk_menor
       backw = 1
   elif state == 11:
     if c == '=':
       state = 1
-      token = Token.tk_mayor_igual
+      token = Term.tk_mayor_igual
     else:
       state = 1
-      token = Token.tk_mayor
+      token = Term.tk_mayor
       backw = 1
   elif state == 12:
     if c == '=':
       state = 1
-      token = Token.tk_igual
+      token = Term.tk_igual
     else:
       state = 1
-      token = Token.tk_asig
+      token = Term.tk_asig
       backw = 1
   elif state == 13:
     if c == '=':
       state = 1
-      token = Token.tk_dif
+      token = Term.tk_dif
     else:
       state = 1
-      token = Token.tk_neg
+      token = Term.tk_neg
       backw = 1
   elif state == 14:
     if c == '|':
       state = 1
-      token = Token.tk_o
+      token = Term.tk_o
     else:
       # lexical error '|' cannot appear alone
       state = -1
   elif state == 15:
     if c == '&':
       state = 1
-      token = Token.tk_y
+      token = Term.tk_y
     else:
       # lexical error '&' cannot appear alone
       state = -1
   # + * % : ; , . ( )  
   elif state == 16:
     state = 1
-    token = Token.tk_mas
+    token = Term.tk_mas
     backw = 1
   elif state == 17:
     state = 1
-    token = Token.tk_mult
+    token = Term.tk_mult
     backw = 1
   elif state == 18:
     state = 1
-    token = Token.tk_mod
+    token = Term.tk_mod
     backw = 1
   elif state == 19:
     state = 1
-    token = Token.tk_dosp
+    token = Term.tk_dosp
     backw = 1
   elif state == 20:
     state = 1
-    token = Token.tk_pyc
+    token = Term.tk_pyc
     backw = 1
   elif state == 21:
     state = 1
-    token = Token.tk_coma
+    token = Term.tk_coma
     backw = 1
   elif state == 22:
     state = 1
-    token = Token.tk_punto
+    token = Term.tk_punto
     backw = 1
   elif state == 23:
     state = 1
-    token = Token.tk_par_izq
+    token = Term.tk_par_izq
     backw = 1
   elif state == 24:
     state = 1
-    token = Token.tk_par_der
+    token = Term.tk_par_der
     backw = 1
   elif state == 25:
     if c == '*':
@@ -379,7 +391,7 @@ def next_state(state, c):
       state = 28
     else:
       state = 1
-      token = Token.tk_div
+      token = Term.tk_div
       backw = 1
   elif state == 26:
     if c == '*':
@@ -404,7 +416,7 @@ def next_state(state, c):
 
   return (state, backw, token)
 
-class Token(enum.Enum):
+class Term(enum.Enum):
   raw_word          = 0
   reserved_word     = 1
   identifier        = 2
