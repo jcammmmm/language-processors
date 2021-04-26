@@ -2,9 +2,10 @@ from predictor import Predictor
 from pprint import pprint
 from string import Template
 
-TOKEN_FUN = "globals.token.id"
-EMPAR_FUN = "match"
-TAB       = "  "
+TOKEN_FUN  = "globals.token.id"
+EMPAR_FUN  = "match"
+SYNTAX_ERR = "SyntacticError"
+TAB        = "  "
 
 def main():
     gen_asdr("grammar/psicoder.gmr")
@@ -42,7 +43,7 @@ def gen_asdr(filename):
 
     # imports
     code = ""
-    code += "from main import {}\n".format(EMPAR_FUN)
+    code += "from main import {}, {}\n".format(EMPAR_FUN, SYNTAX_ERR)
     code += "import globals\n\n"
     
     # boostrap
@@ -102,16 +103,12 @@ def build_cnd_body(alpha):
     return body
 
 def build_else(rules):
-    cnd = TAB + "else:\n" + TAB*2 + "raise SyntaxError('"
-    expect = Template("$token, ")
+    cnd = Template(TAB + "else:\n" + TAB*2 + "raise $err_name($tokens)")
     exp_tk = set()
     for r in rules:
         for tk in r[1]:
-            if tk not in exp_tk:
-                exp_tk.add(tk)
-                cnd += expect.substitute(token=tk)
-    cnd = cnd[:-2] + "')"
-    return cnd
+            exp_tk.add(tk)
+    return cnd.substitute(err_name=SYNTAX_ERR, tokens=list(exp_tk))
 
 """
 Lee un archivo y crea un diccionario que representa esa gramatica
