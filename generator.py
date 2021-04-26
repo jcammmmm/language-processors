@@ -7,7 +7,7 @@ EMPAR_FUN = "match"
 TAB       = "  "
 
 def main():
-    gen_asdr("grammar/incr.gmr")
+    gen_asdr("grammar/psicoder.gmr")
 
 def get_pred_test():
     return {
@@ -102,15 +102,15 @@ def build_cnd_body(alpha):
     return body
 
 def build_else(rules):
-    cnd = TAB + "else:\n" + TAB*2 + "raise SyntaxError("
-    expect = Template("'$token', ")
+    cnd = TAB + "else:\n" + TAB*2 + "raise SyntaxError('"
+    expect = Template("$token, ")
     exp_tk = set()
     for r in rules:
         for tk in r[1]:
             if tk not in exp_tk:
                 exp_tk.add(tk)
                 cnd += expect.substitute(token=tk)
-    cnd = cnd[:-2] + ")"
+    cnd = cnd[:-2] + "')"
     return cnd
 
 """

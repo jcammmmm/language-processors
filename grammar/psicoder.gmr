@@ -1,169 +1,21 @@
-$ NO TERMINALES en mayuscula
-$ terminales en minuscula
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ Estructura del programa
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-PRG : DCL funcion_principal LGC finprincipal DCL
-DCL : FUN DCL
-DCL : EST DCL
-DCL : e
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 0. expresiones, bloques y comandos
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-~~ Tipos
-TYP : booleano
-TYP : caracter
+PRG : FUN funcion_principal BLK fin_principal SRA
+BLK : imprimir tk_par_izq CLL tk_par_der tk_pyc
+BLK : retornar id tk_mas id tk_pyc
+FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer BLK fin_funcion
+CLL : id tk_par_izq ARG tk_par_der 
+PRM : TYP id PRM
+PRM : tk_coma TYP id PRM
+PRM : e
+LIT : tk_entero
+LIT : tk_real
 TYP : entero
 TYP : real
-TYP : cadena
-~~ Literales
-BUL : verdadero
-BUL : falso
-NUM : tk_entero
-NUM : tk_real
-LIT : tk_caracter
-LIT : tk_cadena
-LIT : NUM
-LIT : BUL
-~ Operadores Unario y Binarios
-OPU : tk_neg
-OPB : tk_mas
-OPB : tk_menos
-OPB : tk_mult
-OPB : tk_div
-OPB : tk_mod
-OPB : tk_menor
-OPB : tk_mayor
-OPB : tk_menor_igual
-OPB : tk_mayor_igual
-OPB : tk_y
-OPB : tk_o
-OPB : tk_dif
-~~ Expresiones
-XPR : OPU XPR
-XPR : tk_par_izq LIT OPB XPR tk_par_der
-XPR : LIT OPB XPR
-XPR : LIT
-XPR : e
-
-~~ Comandos
-CMD : CM0 tk_pyc
-CM0 : RET
-CM0 : ROM
-CM0 : DVR
-CM0 : CLL
-CM0 : IDA
-CM0 : INP
-CM0 : OUP
-CM0 : e
-~~ Logica
-LGC : CND
-LGC : LUP
-LGC : SEL
-$$ TODO common factors (retornar)
-~~ Retornos
-RET : retornar id
-RET : retornar
-ROM : romper
-~~ Llamados
-$$ TODO common factors (SMT)
-CLL : id tk_par_der ARG tk_par_izq
-ARG : SMT
-ARG : SMT tk_coma SMT
+ARG : LIT ARG
+ARG : tk_coma LIT ARG
 ARG : e
-SMT : LIT
-SMT : id
-~~ Bloque
-BLK : CMD BLK
-BLK : LGC BLK
-BLK : e
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 1. Declaracion de variables
-$$ TODO common factors
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-DVR : TYP IDA
-IDA : id tk_asig LIT ASG
-IDA : id ASG
-ASG : tk_coma id tk_asig LIT ASG
-ASG : tk_coma id ASG
-ASG : tk_pyc
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 3. Lectura de datos
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-INP : leer tk_par_izq id tk_par_der
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 4. Imprimir
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ TODO common factors (tk_cadena, id, XPR)
-OUP : imprimir tk_par_izq CTT tk_par_der
-CTT : tk_cadena
-CTT : tk_cadena tk_coma CTT
-CTT : id
-CTT : id tk_coma CTT
-CTT : XPR
-CTT : XPR tk_coma CTT
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 5. Condicionales
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ TODO common factors (si tk_par_izq)
-CND : si tk_par_izq PEX tk_par_der entonces BLK fin_si
-CND : si tk_par_izq PEX tk_par_der entonces BLK si_no BLK fin_si
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 6. Ciclos
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-~~ 6.1 Mientras
-LUP : mientras tk_par_izq XPR tk_par_der hacer BLK fin_mientras
-~~ 6.2 Para
-LUP : para tk_par_izq INI tk_pyc XPR tk_pyc STP tk_par_der hacer BLK fin_para
-INI : DVR
-INI : IDA
-STP : tk_real
-STP : tk_entero
-STP : id
-~~ 6.3 hacer-mientras
-LUP : hacer BLK mientras tk_par_izq XPR tk_par_der tk_pyc
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 7. Seleccion multiple
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-SEL : seleccionar tk_par_izq id tk_par_der entre OPC fin_seleccionar
-OPC : CAS OPC
-OPC : DEF
-CAS : caso tk_entero tk_dosp BLK
-DEF : defecto tk_dosp BLK
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 8. Estructuras de datos
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-EST : estructura id ATR fin_estructura
-ATR : DVR tk_pyc ATR
-ATR : id id tk_pyc ATR
-ATR : e
-
-
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-$$ 9. Funciones
-$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-FUN : funcion TYP id tk_par_izq PMT tk_par_der hacer BLK fin_funcion
-PMT : TYP id PM1
-PMT : e
-PM1 : tk_coma TYP id PM1
-PM1 : e
+SRA : estructura id DCL fin_estructura
+DCL : TYP id tk_pyc DCL
+DCL : e
 
 
 

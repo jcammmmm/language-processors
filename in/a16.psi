@@ -1,0 +1,9 @@
+funcion_principal
+    hacer
+        a = a/2;
+    mientras( a > 0 ) hacer
+
+    fin_mientras
+
+
+fin_principal

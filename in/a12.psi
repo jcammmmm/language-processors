@@ -1,0 +1,9 @@
+funcion_principal
+
+    entero n;
+    booleano flag = falso;
+    leer(a,b,c);
+    leer(a;);
+
+
+fin_principal

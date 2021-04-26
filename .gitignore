@@ -1,4 +1,6 @@
 # libreoffice tempfiles
 .~*
 .vscode
-.pyc
+__pycache__
+*.pyc
+*.zip

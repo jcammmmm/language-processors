@@ -1,0 +1,4 @@
+funcion_principal
+    entero a;
+    real x,y= 0,0;
+fin_principal

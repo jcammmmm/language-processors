@@ -4,14 +4,16 @@ import globals
 import asdr
 
 def main():
-    gen_asdr("grammar/incr.gmr")
-    globals.init("in/01.psi")
+    globals.init() # "in/a02.psi")
     globals.token = globals.lexer.next_token()
-    asdr.begin()
-    if (globals.token != ''):
-        raise SyntaxError("NOT EOF")
-    else:
-        print("El analisis sintactico ha finalizado exitosamente.")
+    try:
+        asdr.begin()
+        if (globals.token != ''):
+            raise SyntaxError("NOT EOF")
+        else:
+            print("El analisis sintactico ha finalizado exitosamente.")
+    except SyntaxError as se:
+        print("ERROR: {}".format(se.msg))
 
 def match(expected_token):
     if globals.token.id == expected_token:
@@ -19,5 +21,6 @@ def match(expected_token):
     else:
         raise SyntaxError(expected_token)
 
+    
 if __name__ == "__main__":
     main()

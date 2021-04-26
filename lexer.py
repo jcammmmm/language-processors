@@ -68,17 +68,18 @@ class Lexer:
     self.line = 0
     self.col = 0
     self.state = 0
-    self.readline = lambda: self.readline_stdin()
     self.token_buffer = deque()
+    self.src = self.load_src_from_stdin()
+    self.readline = lambda: self.readline_stdin()
     if filename != None:
       self.filename = filename
       self.src = open(filename, 'r')
       self.readline = lambda: self.src.readline()
 
-  """
-  it returns '' (EOF) when the file parsing was completed
-  """
   def next_token(self):
+    """
+    it returns '' (EOF) when the file parsing was completed
+    """
     if len(self.token_buffer) == 0:
       tokens = []
       while len(tokens) == 0:
@@ -91,10 +92,28 @@ class Lexer:
       self.token_buffer.extend(tokens)
     return self.token_buffer.popleft()
 
+  def load_src_from_stdin(self):
+    """
+    Emulates an stream of data that is provided from stdin
+    """
+    src = []
+    while 1:
+      try:
+        inn = input()
+        src.append(inn + '\n')
+      except EOFError:
+        break
+      except KeyboardInterrupt:
+        break # EOF
+    return src
+
   def readline_stdin(self):
+    """
+    Emulated readline from our virtual stdin src when in stdin modo
+    """
     try:
-      return input() + '\n'
-    except KeyboardInterrupt:
+      return self.src.pop(0)
+    except IndexError:
       return '' # EOF
 
   def get_tokens(self, source_code):
@@ -139,7 +158,7 @@ class Token:
         self.id = lexeme
       else: 
         self.type = Term.identifier
-        self.id = Term.identifier.name
+        self.id = 'id'
     else:
       self.type = token_type
       self.id = self.type.name

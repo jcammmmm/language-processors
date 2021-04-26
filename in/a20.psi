@@ -1,0 +1,4 @@
+estructura Point
+    entero a;
+    entero b;
+fin_estructura
