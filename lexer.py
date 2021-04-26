@@ -69,12 +69,15 @@ class Lexer:
     self.col = 0
     self.state = 0
     self.token_buffer = deque()
-    self.src = self.load_src_from_stdin()
-    self.readline = lambda: self.readline_stdin()
     if filename != None:
       self.filename = filename
       self.src = open(filename, 'r')
       self.readline = lambda: self.src.readline()
+    else:
+      self.filename = None
+      self.src = self.load_src_from_stdin()
+      self.readline = lambda: self.readline_stdin()
+
 
   def next_token(self):
     """
@@ -84,8 +87,8 @@ class Lexer:
       tokens = []
       while len(tokens) == 0:
         code = self.readline()
-        if code == '':
-          return ''
+        if code == '': # EOF
+          return Token(Term.EOF, '', -1, -1)
         elif not code.endswith('\n'): # each line must end with nl
           code = code + '\n'
         tokens = self.get_tokens(code)
@@ -436,6 +439,7 @@ def next_state(state, c):
   return (state, backw, token)
 
 class Term(enum.Enum):
+  EOF               = -1
   raw_word          = 0
   reserved_word     = 1
   identifier        = 2

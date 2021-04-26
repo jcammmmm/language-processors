@@ -1,4 +1,7 @@
-PRG : FUN funcion_principal BLK fin_principal SRA
+PRG : DEF funcion_principal BLK fin_principal DEF
+DEF : FUN
+DEF : SRA
+DEF : e
 BLK : imprimir tk_par_izq CLL tk_par_der tk_pyc
 BLK : retornar id tk_mas id tk_pyc
 FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer BLK fin_funcion

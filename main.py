@@ -4,14 +4,14 @@ import globals
 import asdr
 
 def main():
-    globals.init() # "in/a02.psi")
+    globals.init("in/a20.psi")
     globals.token = globals.lexer.next_token()
     try:
         asdr.begin()
-        if (globals.token != ''):
-            raise SyntaxError("NOT EOF")
-        else:
+        if (globals.token.id == 'EOF'):
             print("El analisis sintactico ha finalizado exitosamente.")
+        else:
+            raise SyntaxError("NOT EOF")
     except SyntaxError as se:
         print("ERROR: {}".format(se.msg))
 
