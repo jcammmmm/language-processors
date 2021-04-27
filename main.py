@@ -2,11 +2,10 @@ import globals
 import asdr
 
 def main():
-    globals.init("in/a20.psi")
     globals.token = globals.lexer.next_token()
     try:
         asdr.begin()
-        if (globals.token.id == 'EOF'):
+        if (globals.token.id == 'eof'):
             print("El analisis sintactico ha finalizado exitosamente.", end='')
         else:
             raise SyntacticError(["NOT EOF"])
@@ -34,7 +33,7 @@ class SyntacticError(SyntaxError):
             col  = globals.token.column
             curr = globals.token.id
             expc = ', '.join(['"{}"'.format(tk) for tk in self.expected])
-            mssg = '<{},{}> Error sintactico: se encontro: "{}"; se esperaba: {}'.format(line, col, curr, expc)
+            mssg = '<{},{}> Error sintactico: se encontro: "{}"; se esperaba: {}.'.format(line, col, curr, expc)
         return mssg
 
 if __name__ == "__main__":

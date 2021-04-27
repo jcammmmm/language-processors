@@ -1,24 +1,65 @@
-PRG : DEF funcion_principal BLK fin_principal DEF
-DEF : FUN
-DEF : SRA
-DEF : e
-BLK : imprimir tk_par_izq CLL tk_par_der tk_pyc
+PRG : INI funcion_principal BLK fin_principal POS
+INI : FUN
+INI : SRA
+INI : e
+POS : INI
+POS : eof
 BLK : retornar id tk_mas id tk_pyc
+BLK : IMP BLK
+BLK : DCL BLK
+BLK : CND BLK
+BLK : CLA BLK
+BLK : e
 FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer BLK fin_funcion
-CLL : id tk_par_izq ARG tk_par_der 
+
+$ imprint
+IMP : imprimir tk_par_izq IM0
+IM0 : CLA tk_par_der tk_pyc
+IM0 : LIT tk_par_der tk_pyc
+
+$ assign and function call
+CLA : id CL2
+CL2 : CL0
+CL2 : CL1
+CL0 : tk_par_izq ARG tk_par_der
+CL1 : tk_asig CL3
+CL3 : LIT tk_pyc
+CL3 : id tk_pyc
+
+CND : si tk_par_izq XPR tk_par_der entonces BLQ
+BLQ : CND BLQ
+BLQ : CLA BLQ
+BLQ : DCL BLQ
+BLQ : IMP BLQ
+BLQ : fin_si
+BLQ : si_no BLQ
 PRM : TYP id PRM
 PRM : tk_coma TYP id PRM
 PRM : e
-LIT : tk_entero
-LIT : tk_real
-TYP : entero
-TYP : real
+
 ARG : LIT ARG
 ARG : tk_coma LIT ARG
 ARG : e
 SRA : estructura id DCL fin_estructura
-DCL : TYP id tk_pyc DCL
-DCL : e
+DCL : TYP id tk_pyc DC0
+DC0 : TYP id tk_pyc DC0
+DC0 : e
+
+$ expressions
+XPR : tk_neg XPR
+XPR : id OPE id
+OPE : tk_igual
+OPE : tk_menor
+OPE : tk_menor_igual
+OPE : tk_mayor
+OPE : tk_mayor_igual
+OPE : tk_mas
+
+LIT : tk_entero
+LIT : tk_real
+LIT : tk_cadena
+TYP : entero
+TYP : real
 
 
 

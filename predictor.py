@@ -5,7 +5,10 @@ from collections import deque
 class Predictor:
     """
     Given an ordered grammar, when this class is instanced computes the prediction
-    set for each grammar rule 
+    set for each grammar rule. When we say ordered that means that the result varies
+    with the order of ther rules.
+    We recommend put more dependant or global rules above , and rules that are dependencies
+    below.
     The attribute 'done' indicates if this Predictor was run already
     """
     def __init__(self, grammar, nont_ord):
@@ -70,9 +73,11 @@ class Predictor:
         return self.PRIMEROS
 
     """
-    Return a list containing the primeros for alpha
+    Return a list containing the primeros for alpha. Keep in mind that the processing
+    takes into account that grammars have an inherent order from where they should be
+    processed.
     param alpha : a sequence of terminal and non terminals
-    returs : the set of primeros
+    returns : the set of primeros
     """
     def __p(self, alpha):
         if len(alpha) == 0:

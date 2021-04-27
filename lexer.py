@@ -88,7 +88,7 @@ class Lexer:
       while len(tokens) == 0:
         code = self.readline()
         if code == '': # EOF
-          return Token(Term.EOF, '', -1, -1)
+          return Token(Term.eof, '', -1, -1)
         elif not code.endswith('\n'): # each line must end with nl
           code = code + '\n'
         tokens = self.get_tokens(code)
@@ -439,7 +439,7 @@ def next_state(state, c):
   return (state, backw, token)
 
 class Term(enum.Enum):
-  EOF               = -1
+  eof               = -1
   raw_word          = 0
   reserved_word     = 1
   identifier        = 2

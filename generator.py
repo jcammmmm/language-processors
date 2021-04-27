@@ -10,27 +10,6 @@ TAB        = "  "
 def main():
     gen_asdr("grammar/psicoder.gmr")
 
-def get_pred_test():
-    return {
-        'A' : [
-                (['Z', 'tk0'], {'tk3', 'tk8'}), 
-                (['U', 'tk0', 'R'], {'tk3', 'tk8'}), 
-                (['e'], {'tk3', 'tk8', 'tk1'}),
-                (['A', 'tk0', 'S'], {'tk2', 'tk8', 'tk1'})
-        ],
-        'B' : [
-                (['Z', 'tk0'], {'tk3', 'tk8'}), 
-                (['e'], {'tk3', 'tk8'}), 
-                (['T', 'tk0', 'S'], {'tk3', 'tk8', 'tk1'}),
-                (['A', 'tk0', 'S'], {'tk2', 'tk8', 'tk1'})
-        ],
-        'C' : [
-                (['T', 'tk0'], {'tk3', 'tk8'}), 
-                (['e'], {'tk9', 'tk1'}), 
-                (['W', 'tk2', 'A'], {'tk2', 'tk1', 'tk3'})
-        ]
-    }
-
 def gen_asdr(filename):
     """writes to a file python code that can perform ASDR
     Parameters
@@ -40,6 +19,9 @@ def gen_asdr(filename):
     grammar, nont_ord = grammar_from_file(filename)
     predictor = Predictor(grammar, nont_ord)
     pred_set = predictor.PRED
+
+    # print predicition set to validate visually the LL(1) condition
+    pprint(pred_set)
 
     # imports
     code = ""
@@ -77,9 +59,8 @@ def gen_nont_call(nont, rules):
 def build_bool_xpr(pred, ini=False):
     _if = ("if" if ini else "elif")
     or_cnd = TAB + _if + " "
-    compare = Template("$get_token == '$cur_symbol' or ")
     for sym in pred:
-        or_cnd += compare.substitute(get_token=TOKEN_FUN, cur_symbol=sym)
+        or_cnd += Template("$get_token == '$cur_symbol' or ").substitute(get_token=TOKEN_FUN, cur_symbol=sym)
     or_cnd = or_cnd[:-4]
     or_cnd += ":\n"
     return or_cnd
@@ -141,6 +122,27 @@ def grammar_from_file(filename):
 
     f.close()
     return grammar, nont_ord 
+
+def get_pred_test():
+    return {
+        'A' : [
+                (['Z', 'tk0'], {'tk3', 'tk8'}), 
+                (['U', 'tk0', 'R'], {'tk3', 'tk8'}), 
+                (['e'], {'tk3', 'tk8', 'tk1'}),
+                (['A', 'tk0', 'S'], {'tk2', 'tk8', 'tk1'})
+        ],
+        'B' : [
+                (['Z', 'tk0'], {'tk3', 'tk8'}), 
+                (['e'], {'tk3', 'tk8'}), 
+                (['T', 'tk0', 'S'], {'tk3', 'tk8', 'tk1'}),
+                (['A', 'tk0', 'S'], {'tk2', 'tk8', 'tk1'})
+        ],
+        'C' : [
+                (['T', 'tk0'], {'tk3', 'tk8'}), 
+                (['e'], {'tk9', 'tk1'}), 
+                (['W', 'tk2', 'A'], {'tk2', 'tk1', 'tk3'})
+        ]
+    }
         
 if __name__ == "__main__":
     main()
