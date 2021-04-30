@@ -71,15 +71,15 @@ SRA : estructura id ATR fin_estructura
 ATR : DCL ATR
 ATR : e
 
-$ variable declaration
-DCL : TYP id DC0
-~ declare comma
-DC0 : tk_coma DC1
-DC1 : id DC2
-DC2 : tk_coma id DC2
-DC2 : tk_pyc
-~ declare semicolon
+$ variable declaration, initialization
+DCL : TYP DC3
+DC3 : id DC0
 DC0 : tk_pyc
+DC0 : tk_coma DC3
+DC0 : tk_asig LIT DC2
+DC2 : tk_coma DC3
+DC2 : tk_pyc
+~ real x,y= 0,0;
 
 $ expressions
 XPR : tk_neg XPR
@@ -93,11 +93,17 @@ OPE : tk_mayor
 OPE : tk_mayor_igual
 OPE : tk_mas
 
+LIT : verdadero
+LIT : falso
+LIT : tk_caracter
 LIT : tk_entero
 LIT : tk_real
 LIT : tk_cadena
+TYP : booleano
+TYP : caracter
 TYP : entero
 TYP : real
+TYP : cadena
 
 
 

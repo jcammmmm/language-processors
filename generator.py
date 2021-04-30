@@ -2,10 +2,11 @@ from predictor import Predictor
 from pprint import pprint
 from string import Template
 
-TOKEN_FUN  = "globals.token.id"
-EMPAR_FUN  = "match"
-SYNTAX_ERR = "SyntacticError"
-TAB        = "  "
+TOKEN_FUN   = "globals.token.id"
+EMPAR_FUN   = "match"
+SYNTAX_ERR  = "SyntacticError"
+TAB         = "  "
+
 
 def main():
     gen_asdr("grammar/psicoder.gmr")
@@ -89,7 +90,16 @@ def build_else(rules):
     for r in rules:
         for tk in r[1]:
             exp_tk.add(tk)
-    return cnd.substitute(err_name=SYNTAX_ERR, tokens=list(exp_tk))
+    tk_sorted = sort_and_translate_tokens(exp_tk)
+    return cnd.substitute(err_name=SYNTAX_ERR, tokens=tk_sorted)
+
+def sort_and_translate_tokens(tokens):
+    l = []
+    for tk in tokens:
+        l.append(TOKEN_ORDER[tk])
+    l.sort(key=lambda tup: tup[0])
+    return [tup[1] for tup in l]
+
 
 """
 Lee un archivo y crea un diccionario que representa esa gramatica
@@ -144,5 +154,73 @@ def get_pred_test():
         ]
     }
         
+def get_token_list():
+    """
+    This map define the relative token order
+    """
+    return {
+        'tk_mas':            (1, '+'),
+        'tk_menos':          (2, '-'),                  
+        'tk_mult':           (3, '*'),   
+        'tk_div':            (4, '/'),   
+        'tk_mod':            (5, '%'),   
+        'tk_asig':           (6, '='),   
+        'tk_menor':          (7, '<'),   
+        'tk_mayor':          (8, '>'),   
+        'tk_menor_igual':    (9, '<='),  
+        'tk_mayor_igual':    (10, '>='),  
+        'tk_igual':          (11, '=='),  
+        'tk_y':              (12, '&&'),  
+        'tk_o':              (13, '||'),                  
+        'tk_dif':            (14, '!='),                  
+        'tk_neg':            (15, '!'),                   
+        'tk_dosp':           (16, ':'),                   
+        'tk_pyc':            (17, ';'),                   
+        'tk_coma':           (18, ','),                   
+        'tk_punto':          (19, '.'),                   
+        'tk_par_izq':        (20, '('),                   
+        'tk_par_der':        (21, ')'),                   
+        'id':                (22, 'identificador'),    
+        'tk_entero':         (23, 'valor_entero'),     
+        'tk_real':           (24, 'valor_real'),       
+        'tk_caracter':       (25, 'valor_caracter'),   
+        'tk_cadena':         (26, 'valor_cadena'),     
+        'funcion_principal': (27, 'funcion_principal'),
+        'fin_principal':     (28, 'fin_principal'),    
+        'leer':              (29, 'leer'),             
+        'imprimir':          (30, 'imprimir'),         
+        'booleano':          (31, 'booleano'),     
+        'caracter':          (32, 'caracter'),
+        'entero':            (33, 'entero'),
+        'real':              (34, 'real'),
+        'cadena':            (35, 'cadena'),
+        'si':                (36, 'si'),
+        'entonces':          (37, 'entonces'),
+        'fin_si':            (38, 'fin_si'),
+        'si_no':             (39, 'si_no'),
+        'mientras':          (40, 'mientras'),
+        'hacer':             (42, 'hacer'),
+        'fin_mientras':      (43, 'fin_mientras'),
+        'para':              (44, 'para'),             
+        'fin_para':          (45, 'fin_para'),         
+        'seleccionar':       (46, 'seleccionar'),      
+        'entre':             (47, 'entre'),            
+        'caso':              (48, 'caso'),             
+        'romper':            (49, 'romper'),           
+        'defecto':           (50, 'defecto'),          
+        'fin_seleccionar':   (51, 'fin_seleccionar'),  
+        'estructura':        (52, 'estructura'),       
+        'fin_estructura':    (53, 'fin_estructura'),   
+        'funcion':           (54, 'funcion'),          
+        'fin_funcion':       (55, 'fin_funcion'),      
+        'retornar':          (56, 'retornar'),         
+        'falso':             (57, 'falso'),            
+        'verdadero':         (58, 'verdadero'),        
+        'eof':               (59, 'EOF'),
+        'e':                 (60, 'e'),
+        '$':                 (61, '$')
+    }
+
 if __name__ == "__main__":
+    TOKEN_ORDER = get_token_list()
     main()

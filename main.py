@@ -10,7 +10,7 @@ def main():
         else:
             raise SyntacticError(["NOT EOF"])
     except SyntaxError as se:
-        print(se.err_mssg())
+        print(se.err_mssg(), end='')
 
 def match(expected_token):
     if globals.token.id == expected_token:
@@ -31,7 +31,7 @@ class SyntacticError(SyntaxError):
         else:
             line = globals.token.line
             col  = globals.token.column
-            curr = globals.token.id
+            curr = globals.token.lexeme
             expc = ', '.join(['"{}"'.format(tk) for tk in self.expected])
             mssg = '<{},{}> Error sintactico: se encontro: "{}"; se esperaba: {}.'.format(line, col, curr, expc)
         return mssg

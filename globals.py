@@ -8,7 +8,7 @@ that lexer without file location will be instanced.
 """
 src_loc = None
 if os.getenv('STAGE') == 'DEVELOPMENT':
-    src_loc = 'in/a04.psi'
+    src_loc = 'in/a05.psi'
 
 global token, lexer
 token = ''
