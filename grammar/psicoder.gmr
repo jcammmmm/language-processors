@@ -4,10 +4,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PRG : INI funcion_principal BLK fin_principal POS
-INI : FUN
-INI : SRA
+INI : FUN INI
+INI : SRA INI
 INI : e
-POS : INI
+POS : FUN POS
+POS : SRA POS
 POS : eof
 BLK : RET
 BLK : IMP BLK
@@ -55,6 +56,48 @@ CL3 : id CL4 tk_pyc
 CL4 : tk_par_izq ARG tk_par_der
 CL4 : XP1
 
+$ loops
+~ for
+FOR : para tk_par_izq DCL XPR tk_pyc STP tk_par_der hacer FO1
+FO1 : CND FO1
+FO1 : CLA FO1
+FO1 : DCL FO1
+FO1 : IMP FO1
+FO1 : LEE FO1
+FO1 : FOR FO1
+FO1 : DOW FO1
+FO1 : WLE FO1
+FO1 : SEL FO1
+FO1 : romper FO1
+FO1 : fin_para
+STP : LIT
+~ do
+DOW : hacer DO1 tk_par_izq XPR tk_par_der tk_pyc
+DO1 : CND DO1
+DO1 : CLA DO1
+DO1 : DCL DO1
+DO1 : IMP DO1
+DO1 : LEE DO1
+DO1 : FOR DO1
+DO1 : DOW DO1
+DO1 : WLE DO1
+DO1 : SEL DO1
+DO1 : romper DO1
+DO1 : mientras
+~ while
+WLE : mientras tk_par_izq XPR tk_par_der hacer WL1
+WL1 : CND WL1
+WL1 : CLA WL1
+WL1 : DCL WL1
+WL1 : IMP WL1
+WL1 : LEE WL1
+WL1 : FOR WL1
+WL1 : DOW WL1
+WL1 : WLE WL1
+WL1 : SEL WL1
+WL1 : romper WL1
+WL1 : fin_mientras
+
 $ split
 CND : si tk_par_izq XPR tk_par_der entonces BLQ
 BLQ : CND BLQ
@@ -82,14 +125,7 @@ SRA : estructura id ATR fin_estructura
 ATR : DCL ATR
 ATR : e
 
-$ loops
-~ for
-FOR : para tk_par_izq DCL XPR tk_pyc STP tk_par_der hacer BLK fin_para
-STP : LIT
-~ do
-DOW : hacer BLK mientras tk_par_izq XPR tk_par_der tk_pyc
-~ while
-WLE : mientras tk_par_izq XPR tk_par_der hacer BLK fin_mientras
+
 
 $ switch
 SEL : seleccionar tk_par_izq id tk_par_der entre OPC fin_seleccionar
