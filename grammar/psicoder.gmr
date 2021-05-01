@@ -46,8 +46,13 @@ INP : id ACC
 ACC : tk_punto id ACC
 ACC : e
 
-$ call and assign and id
+$ call assign and id 
 CLA : id CL2
+~ Point p
+CL2 : id tk_pyc
+CL2 : tk_punto id CL5 tk_asig LIT tk_pyc
+CL5 : tk_punto id CL5
+CL5 : e
 CL2 : tk_par_izq ARG tk_par_der
 CL2 : tk_asig CL3
 CL3 : tk_neg id tk_pyc
@@ -121,9 +126,13 @@ AR1 : tk_coma AR2
 AR2 : LIT AR1
 AR2 : id AR1
 AR1 : e
-SRA : estructura id ATR fin_estructura
-ATR : DCL ATR
-ATR : e
+SRA : estructura id ATR
+ATR : TPO id AT1 tk_pyc ATR
+AT1 : tk_coma id AT1
+AT1 : e
+ATR : fin_estructura
+TPO : id
+TPO : TYP
 
 
 

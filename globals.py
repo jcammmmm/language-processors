@@ -23,8 +23,7 @@ if os.getenv('STAGE') == 'DEVELOPMENT':
     # src_loc = 'in/a20.psi' # 
     # src_loc = 'in/a21.psi' # 
     # src_loc = 'in/a22.psi' # 
-    # src_loc = 'in/a23.psi' # 
-
+    
 global token, lexer
 token = ''
 lexer = (Lexer(src_loc) if src_loc else Lexer()) 
