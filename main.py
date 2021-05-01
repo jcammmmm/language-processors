@@ -16,7 +16,7 @@ def main():
             ('in/a12.psi', '<5,11> Error sintactico: se encontro: ","; se esperaba: ".", ")".'),
             ('in/a13.psi', '<8,8> Error sintactico: se encontro: "res"; se esperaba: "entonces".'),
             ('in/a16.psi', '<9,1> Error sintactico: se encontro: "fin_principal"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper".'),
-            ('in/a17.psi', '<2,5> Error sintactico: se encontro: "hacer"; se esperaba: "booleano", "caracter", "entero", "real", "cadena", "fin_estructura".'),
+            ('in/a17.psi', '<2,5> Error sintactico: se encontro: "hacer"; se esperaba: "identificador", "booleano", "caracter", "entero", "real", "cadena", "fin_estructura".'),
             ('in/a18.psi', '<3,1> Error sintactico: se encontro: "fin_funcion"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper", "retornar".'),
             ('in/a19.psi', 'El analisis sintactico ha finalizado exitosamente.'),
             # src_loc = 'in/a20.psi' # 
@@ -25,14 +25,13 @@ def main():
         ]
         for f in src:
             print("SRC : {}".format(f[0]))
-            launch_syntactic_analizer(f[0])
-            print()
-            print(f[1])
+            print("OUR : {}".format(launch_syntactic_analizer(f[0])))
+            print("EXP : {}".format(f[1]))
     else:
         """
         only run the analizer once from console
         """
-        launch_syntactic_analizer()
+        print(launch_syntactic_analizer(), end='')
 
 if __name__ == "__main__":
     main()

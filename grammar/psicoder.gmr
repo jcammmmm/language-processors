@@ -22,7 +22,12 @@ BLK : SEL BLK
 BLK : e
 
 $ functions
-FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer LGC RET fin_funcion
+FUN : funcion TIP id tk_par_izq PRM tk_par_der hacer LGC RET fin_funcion
+PRM : TIP id PRM
+PRM : tk_coma TIP id PRM
+PRM : e
+TIP : id
+TIP : TYP
 LGC : IMP LGC
 LGC : DCL LGC
 LGC : CND LGC
@@ -36,22 +41,39 @@ LGC : e
 LGC : romper LGC
 RET : retornar XPR tk_pyc
 
+$ switch
+SEL : seleccionar tk_par_izq id tk_par_der entre OPC fin_seleccionar
+OPC : caso LIT tk_dosp SE1 OPC
+OPC : defecto tk_dosp SE1
+OPC : e
+SE1 : CND SE1
+SE1 : CLA SE1
+SE1 : DCL SE1
+SE1 : IMP SE1
+SE1 : LEE SE1
+SE1 : FOR SE1
+SE1 : DOW SE1
+SE1 : WLE SE1
+SE1 : SEL SE1
+SE1 : romper tk_pyc SE1
+SE1 : e
+
+
 $ in-out
 ~ in must be nonempty
-IMP : imprimir tk_par_izq SHW tk_par_der tk_pyc
+IMP : imprimir tk_par_izq SHW tk_pyc
 SHW : id SH0
-SHW : LIT SH0
-SH0 : OPE XPR
-SH0 : tk_par_izq ARG tk_par_der
-SH0 : e
-SH1 : id SHW
-SHW : SH0
-SHW : tk_par_izq ARG tk_par_der SH0
-SH1 : LIT
-SH0 : tk_coma id SH0
-SH0 : tk_par_izq ARG tk_par_der SH0
-SH0 : LIT
-SH0 : e
+SHW : LIT SH1
+SH0 : OPE EXP
+SH0 : FIN
+SH0 : tk_par_izq ARG tk_par_der FIN
+SH1 : OPE EXP
+SH1 : FIN
+EXP : VAL EX1
+EX1 : OPE VAL EX1
+EX1 : FIN
+FIN : tk_coma SHW
+FIN : tk_par_der
 ~ out
 LEE : leer tk_par_izq INP tk_par_der tk_pyc
 INP : id ACC
@@ -65,7 +87,7 @@ CL2 : id tk_pyc
 CL2 : tk_punto id CL5 tk_asig LIT tk_pyc
 CL5 : tk_punto id CL5
 CL5 : e
-CL2 : tk_par_izq ARG tk_par_der
+CL2 : tk_par_izq ARG tk_par_der tk_pyc
 CL2 : tk_asig CL3
 CL3 : tk_neg id tk_pyc
 CL3 : LIT tk_pyc
@@ -75,7 +97,11 @@ CL4 : XP1
 
 $ loops
 ~ for
-FOR : para tk_par_izq DCL XPR tk_pyc STP tk_par_der hacer FO1
+FOR : para tk_par_izq BEG tk_pyc XPR tk_pyc STP tk_par_der hacer FO1
+BEG : TYP id tk_asig BE1
+BEG : id tk_asig BE1
+BE1 : LIT
+BE1 : id
 FO1 : CND FO1
 FO1 : CLA FO1
 FO1 : DCL FO1
@@ -89,7 +115,12 @@ FO1 : romper FO1
 FO1 : fin_para
 STP : LIT
 ~ do
-DOW : hacer DO1 tk_par_izq XPR tk_par_der tk_pyc
+DOW : hacer DO1
+DO1 : mientras tk_par_izq XPR tk_par_der DO2
+DO2 : tk_pyc
+DO2 : hacer DO3
+DO3 : DO1
+DO3 : fin_mientras DO1
 DO1 : CND DO1
 DO1 : CLA DO1
 DO1 : DCL DO1
@@ -100,7 +131,6 @@ DO1 : DOW DO1
 DO1 : WLE DO1
 DO1 : SEL DO1
 DO1 : romper DO1
-DO1 : mientras
 ~ while
 WLE : mientras tk_par_izq XPR tk_par_der hacer WL1
 WL1 : CND WL1
@@ -128,31 +158,22 @@ BLQ : WLE BLQ
 BLQ : SEL BLQ
 BLQ : fin_si
 BLQ : si_no BLQ
-PRM : TYP id PRM
-PRM : tk_coma TYP id PRM
-PRM : e
 
 ARG : LIT AR1
 ARG : id AR1
+ARG : e
 AR1 : tk_coma AR2 
 AR2 : LIT AR1
 AR2 : id AR1
 AR1 : e
 SRA : estructura id ATR
-ATR : TPO id AT1 tk_pyc ATR
+ATR : id AT2
+ATR : TYP AT2
+AT2 : id AT1 tk_pyc ATR
 AT1 : tk_coma id AT1
 AT1 : e
 ATR : fin_estructura
-TPO : id
-TPO : TYP
 
-
-
-$ switch
-SEL : seleccionar tk_par_izq id tk_par_der entre OPC fin_seleccionar
-OPC : caso LIT tk_dosp BLK OPC
-OPC : defecto tk_dosp BLK
-OPC : e
 
 $ variable declaration, initialization
 DCL : TYP DC3
@@ -171,6 +192,7 @@ XP1 : e
 VAL : id
 VAL : LIT
 OPE : tk_igual
+OPE : tk_dif
 OPE : tk_menor
 OPE : tk_menor_igual
 OPE : tk_mayor

@@ -7,11 +7,11 @@ def launch_syntactic_analizer(source_file=None):
     try:
         asdr.begin()
         if (globals.token.id == 'eof'):
-            print("El analisis sintactico ha finalizado exitosamente.", end='')
+            return "El analisis sintactico ha finalizado exitosamente."
         else:
             raise SyntacticError(["NOT EOF"])
     except SyntaxError as se:
-        print(se.err_mssg(), end='')
+        return se.err_mssg()
 
 def match(expected_token):
     if globals.token.id == expected_token:
