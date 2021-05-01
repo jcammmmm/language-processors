@@ -18,8 +18,8 @@ if os.getenv('STAGE') == 'DEVELOPMENT':
     src_loc = 'in/a13.psi' # <8,8> Error sintactico: se encontro: "res"; se esperaba: "entonces".
     src_loc = 'in/a16.psi' # <9,1> Error sintactico: se encontro: "fin_principal"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper".
     src_loc = 'in/a17.psi' # <2,5> Error sintactico: se encontro: "hacer"; se esperaba: "booleano", "caracter", "entero", "real", "cadena", "fin_estructura".
-    # src_loc = 'in/a18.psi' # 
-    # src_loc = 'in/a19.psi' # 
+    src_loc = 'in/a18.psi' # <3,1> Error sintactico: se encontro: "fin_funcion"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper", "retornar".
+    # src_loc = 'in/a19.psi' # El analisis sintactico ha finalizado exitosamente.
     # src_loc = 'in/a20.psi' # 
     # src_loc = 'in/a21.psi' # 
     # src_loc = 'in/a22.psi' # 

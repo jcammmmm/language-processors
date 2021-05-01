@@ -10,7 +10,6 @@ INI : e
 POS : FUN POS
 POS : SRA POS
 POS : eof
-BLK : RET
 BLK : IMP BLK
 BLK : DCL BLK
 BLK : CND BLK
@@ -21,7 +20,20 @@ BLK : DOW BLK
 BLK : WLE BLK
 BLK : SEL BLK
 BLK : e
-FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer BLK fin_funcion
+
+$ functions
+FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer LGC RET fin_funcion
+LGC : IMP LGC
+LGC : DCL LGC
+LGC : CND LGC
+LGC : CLA LGC
+LGC : LEE LGC
+LGC : FOR LGC
+LGC : DOW LGC
+LGC : WLE LGC
+LGC : SEL LGC
+LGC : e
+LGC : romper LGC
 RET : retornar XPR tk_pyc
 
 $ in-out
