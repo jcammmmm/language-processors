@@ -3,8 +3,8 @@ from pprint import pprint
 from string import Template
 
 TOKEN_FUN   = "globals.token.id"
-EMPAR_FUN   = "match"
-SYNTAX_ERR  = "SyntacticError"
+EMPAR_FUN   = "s.match"
+SYNTAX_ERR  = "s.SyntacticError"
 TAB         = "  "
 
 
@@ -26,7 +26,8 @@ def gen_asdr(filename):
 
     # imports
     code = ""
-    code += "from main import {}, {}\n".format(EMPAR_FUN, SYNTAX_ERR)
+    # code += "from syntax import {}, {}\n".format(EMPAR_FUN, SYNTAX_ERR)
+    code += "import syntax as s\n"
     code += "import globals\n\n"
     
     # boostrap

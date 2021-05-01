@@ -1,40 +1,38 @@
-import globals
-import asdr
+import os
+from syntax import launch_syntactic_analizer
 
 def main():
-    globals.token = globals.lexer.next_token()
-    try:
-        asdr.begin()
-        if (globals.token.id == 'eof'):
-            print("El analisis sintactico ha finalizado exitosamente.", end='')
-        else:
-            raise SyntacticError(["NOT EOF"])
-    except SyntaxError as se:
-        print(se.err_mssg(), end='')
-
-def match(expected_token):
-    if globals.token.id == expected_token:
-        globals.token = globals.lexer.next_token()
+    if os.getenv('STAGE') == 'DEVELOPMENT':
+        """
+        run the analizer in batch from file
+        """
+        src = [
+            ('in/a02.psi', 'El analisis sintactico ha finalizado exitosamente.'),
+            ('in/a03.psi', 'El analisis sintactico ha finalizado exitosamente.'),
+            ('in/a04.psi', 'El analisis sintactico ha finalizado exitosamente.'),
+            ('in/a05.psi', 'El analisis sintactico ha finalizado exitosamente.'),
+            ('in/a08.psi', 'El analisis sintactico ha finalizado exitosamente.'),
+            ('in/a11.psi', '<3,17> Error sintactico: se encontro: "0"; se esperaba: "identificador".'),
+            ('in/a12.psi', '<5,11> Error sintactico: se encontro: ","; se esperaba: ".", ")".'),
+            ('in/a13.psi', '<8,8> Error sintactico: se encontro: "res"; se esperaba: "entonces".'),
+            ('in/a16.psi', '<9,1> Error sintactico: se encontro: "fin_principal"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper".'),
+            ('in/a17.psi', '<2,5> Error sintactico: se encontro: "hacer"; se esperaba: "booleano", "caracter", "entero", "real", "cadena", "fin_estructura".'),
+            ('in/a18.psi', '<3,1> Error sintactico: se encontro: "fin_funcion"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper", "retornar".'),
+            ('in/a19.psi', 'El analisis sintactico ha finalizado exitosamente.'),
+            # src_loc = 'in/a20.psi' # 
+            # src_loc = 'in/a21.psi' # 
+            # src_loc = 'in/a22.psi' # 
+        ]
+        for f in src:
+            print("SRC : {}".format(f[0]))
+            launch_syntactic_analizer(f[0])
+            print()
+            print(f[1])
     else:
-        raise SyntacticError([expected_token])
-
-class SyntacticError(SyntaxError):
-    def __init__(self, expected_tokens):
         """
-        A list of expected tokens
+        only run the analizer once from console
         """
-        self.expected = expected_tokens
-
-    def err_mssg(self):
-        if self.expected[0] == 'funcion_principal':
-            mssg = "Error sintactico: falta funcion_principal"
-        else:
-            line = globals.token.line
-            col  = globals.token.column
-            curr = globals.token.lexeme
-            expc = ', '.join(['"{}"'.format(tk) for tk in self.expected])
-            mssg = '<{},{}> Error sintactico: se encontro: "{}"; se esperaba: {}.'.format(line, col, curr, expc)
-        return mssg
+        launch_syntactic_analizer()
 
 if __name__ == "__main__":
     main()
