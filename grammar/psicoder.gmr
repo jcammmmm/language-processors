@@ -15,6 +15,10 @@ BLK : DCL BLK
 BLK : CND BLK
 BLK : CLA BLK
 BLK : LEE BLK
+BLK : FOR BLK
+BLK : DOW BLK
+BLK : WLE BLK
+BLK : SEL BLK
 BLK : e
 FUN : funcion TYP id tk_par_izq PRM tk_par_der hacer BLK fin_funcion
 RET : retornar XPR tk_pyc
@@ -24,10 +28,9 @@ $ in-out
 IMP : imprimir tk_par_izq SHW tk_par_der tk_pyc
 SHW : id SH0
 SHW : LIT SH0
+SH0 : OPE XPR
 SH0 : tk_par_izq ARG tk_par_der
 SH0 : e
-
-
 SH1 : id SHW
 SHW : SH0
 SHW : tk_par_izq ARG tk_par_der SH0
@@ -37,16 +40,20 @@ SH0 : tk_par_izq ARG tk_par_der SH0
 SH0 : LIT
 SH0 : e
 ~ out
-LEE : leer tk_par_izq id tk_par_der tk_pyc
+LEE : leer tk_par_izq INP tk_par_der tk_pyc
+INP : id ACC
+ACC : tk_punto id ACC
+ACC : e
 
 $ call and assign and id
 CLA : id CL2
 CL2 : tk_par_izq ARG tk_par_der
 CL2 : tk_asig CL3
+CL3 : tk_neg id tk_pyc
 CL3 : LIT tk_pyc
-CL3 : id CL4
-CL4 : tk_pyc
-CL4 : tk_par_izq ARG tk_par_der tk_pyc
+CL3 : id CL4 tk_pyc
+CL4 : tk_par_izq ARG tk_par_der
+CL4 : XP1
 
 $ split
 CND : si tk_par_izq XPR tk_par_der entonces BLQ
@@ -55,6 +62,10 @@ BLQ : CLA BLQ
 BLQ : DCL BLQ
 BLQ : IMP BLQ
 BLQ : LEE BLQ
+BLQ : FOR BLQ
+BLQ : DOW BLQ
+BLQ : WLE BLQ
+BLQ : SEL BLQ
 BLQ : fin_si
 BLQ : si_no BLQ
 PRM : TYP id PRM
@@ -71,6 +82,21 @@ SRA : estructura id ATR fin_estructura
 ATR : DCL ATR
 ATR : e
 
+$ loops
+~ for
+FOR : para tk_par_izq DCL XPR tk_pyc STP tk_par_der hacer BLK fin_para
+STP : LIT
+~ do
+DOW : hacer BLK mientras tk_par_izq XPR tk_par_der tk_pyc
+~ while
+WLE : mientras tk_par_izq XPR tk_par_der hacer BLK fin_mientras
+
+$ switch
+SEL : seleccionar tk_par_izq id tk_par_der entre OPC fin_seleccionar
+OPC : caso LIT tk_dosp BLK OPC
+OPC : defecto tk_dosp BLK
+OPC : e
+
 $ variable declaration, initialization
 DCL : TYP DC3
 DC3 : id DC0
@@ -79,20 +105,26 @@ DC0 : tk_coma DC3
 DC0 : tk_asig LIT DC2
 DC2 : tk_coma DC3
 DC2 : tk_pyc
-~ real x,y= 0,0;
 
 $ expressions
 XPR : tk_neg XPR
-XPR : id XP1
-XP1 : OPE id
+XPR : VAL XP1
+XP1 : OPE VAL XP1
 XP1 : e
+VAL : id
+VAL : LIT
 OPE : tk_igual
 OPE : tk_menor
 OPE : tk_menor_igual
 OPE : tk_mayor
 OPE : tk_mayor_igual
 OPE : tk_mas
+OPE : tk_menos
+OPE : tk_mult
+OPE : tk_div
+OPE : tk_mod
 
+$ data def
 LIT : verdadero
 LIT : falso
 LIT : tk_caracter

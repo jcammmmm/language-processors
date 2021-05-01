@@ -90,6 +90,8 @@ def build_else(rules):
     for r in rules:
         for tk in r[1]:
             exp_tk.add(tk)
+    # e cannot be an expected char since is not a char!!
+    exp_tk -= {'e'}
     tk_sorted = sort_and_translate_tokens(exp_tk)
     return cnd.substitute(err_name=SYNTAX_ERR, tokens=tk_sorted)
 
