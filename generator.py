@@ -22,7 +22,7 @@ def gen_asdr(filename):
     pred_set = predictor.PRED
 
     # print predicition set to validate visually the LL(1) condition
-    pprint(pred_set)
+    # pprint(pred_set)
 
     # imports
     code = ""

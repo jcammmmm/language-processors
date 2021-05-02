@@ -19,9 +19,10 @@ def main():
             ('in/a17.psi', '<2,5> Error sintactico: se encontro: "hacer"; se esperaba: "identificador", "booleano", "caracter", "entero", "real", "cadena", "fin_estructura".'),
             ('in/a18.psi', '<3,1> Error sintactico: se encontro: "fin_funcion"; se esperaba: "identificador", "leer", "imprimir", "booleano", "caracter", "entero", "real", "cadena", "si", "mientras", "hacer", "para", "seleccionar", "romper", "retornar".'),
             ('in/a19.psi', 'El analisis sintactico ha finalizado exitosamente.'),
-            # src_loc = 'in/a20.psi' # 
-            # src_loc = 'in/a21.psi' # 
-            # src_loc = 'in/a22.psi' # 
+            ('in/a20.psi', 'Error sintactico: falta funcion_principal'),
+            ('in/a21.psi', '<3,12> Error sintactico: se encontro: ";"; se esperaba: "-", "!", "(", "identificador", "valor_entero", "valor_real", "valor_caracter", "valor_cadena", "falso", "verdadero".'),
+            # src_loc = 'in/a22.psi' # <8,10> Error sintactico: se encontro: ";"; se esperaba: "=", ".", "(", "identificador".
+            # src_loc = 'in/a23.psi' # <9,14> Error sintactico: se encontro: ")"; se esperaba: "-", "!", "(", "identificador", "valor_entero", "valor_real", "valor_caracter", "valor_cadena", "falso", "verdadero".
         ]
         for f in src:
             print("SRC : {}".format(f[0]))

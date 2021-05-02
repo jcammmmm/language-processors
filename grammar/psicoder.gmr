@@ -82,9 +82,8 @@ ACC : e
 
 $ call assign and id 
 CLA : id CL2
-~ Point p
 CL2 : id tk_pyc
-CL2 : tk_punto id CL5 tk_asig LIT tk_pyc
+CL2 : tk_punto id CL5 tk_asig VAL XP1 tk_pyc
 CL5 : tk_punto id CL5
 CL5 : e
 CL2 : tk_par_izq ARG tk_par_der tk_pyc
@@ -191,6 +190,7 @@ XP1 : OPE VAL XP1
 XP1 : e
 VAL : id
 VAL : LIT
+OPE : tk_punto
 OPE : tk_igual
 OPE : tk_dif
 OPE : tk_menor
