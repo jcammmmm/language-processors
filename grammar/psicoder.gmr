@@ -65,7 +65,7 @@ IMP : imprimir tk_par_izq SHW tk_pyc
 SHW : id SH0
 SHW : tk_menos VAL FIN
 SHW : tk_neg VAL FIN
-SHW : tk_par_izq VAL FIN
+SHW : tk_par_izq VAL OPE VAL tk_par_der OPE VAL XP1 FIN
 SHW : LIT SH1
 SH0 : OPE EXP
 SH0 : FIN

@@ -25,9 +25,9 @@ def main():
             ('in/a23.psi', '<9,14> Error sintactico: se encontro: ")"; se esperaba: "-", "!", "(", "identificador", "valor_entero", "valor_real", "valor_caracter", "valor_cadena", "falso", "verdadero".')
         ]
         for f in src:
-            print("SRC : {}".format(f[0]))
-            print("OUR : {}".format(launch_syntactic_analizer(f[0])))
-            print("EXP : {}".format(f[1]))
+            print("SRC ~ {}".format(f[0]))
+            print("OUR == EXP : {}".format(launch_syntactic_analizer(f[0]) == f[1]))
+            # print("EXP : {}".format(f[1]))
     else:
         """
         only run the analizer once from console
