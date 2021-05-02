@@ -63,6 +63,9 @@ $ in-out
 ~ in must be nonempty
 IMP : imprimir tk_par_izq SHW tk_pyc
 SHW : id SH0
+SHW : tk_menos VAL FIN
+SHW : tk_neg VAL FIN
+SHW : tk_par_izq VAL FIN
 SHW : LIT SH1
 SH0 : OPE EXP
 SH0 : FIN
@@ -88,11 +91,13 @@ CL5 : tk_punto id CL5
 CL5 : e
 CL2 : tk_par_izq ARG tk_par_der tk_pyc
 CL2 : tk_asig CL3
+~CL3 : tk_menos id tk_pyc
 CL3 : tk_neg id tk_pyc
 CL3 : LIT tk_pyc
 CL3 : id CL4 tk_pyc
 CL4 : tk_par_izq ARG tk_par_der
 CL4 : XP1
+~CL4 : tk_pyc
 
 $ loops
 ~ for
@@ -179,9 +184,19 @@ DCL : TYP DC3
 DC3 : id DC0
 DC0 : tk_pyc
 DC0 : tk_coma DC3
-DC0 : tk_asig LIT DC2
+DC0 : tk_asig DC8 
 DC2 : tk_coma DC3
 DC2 : tk_pyc
+DC8 : LIT DC2
+DC8 : tk_menos id tk_pyc
+DC8 : tk_neg id tk_pyc
+DC8 : tk_par_izq ARG tk_par_der tk_pyc
+DC8 : LIT tk_pyc
+DC8 : id DC7 tk_pyc
+DC7 : tk_par_izq ARG tk_par_der
+DC7 : XP1
+DC7 : tk_pyc
+
 
 $ expressions
 XPR : tk_neg XPR

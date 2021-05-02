@@ -21,8 +21,8 @@ def main():
             ('in/a19.psi', 'El analisis sintactico ha finalizado exitosamente.'),
             ('in/a20.psi', 'Error sintactico: falta funcion_principal'),
             ('in/a21.psi', '<3,12> Error sintactico: se encontro: ";"; se esperaba: "-", "!", "(", "identificador", "valor_entero", "valor_real", "valor_caracter", "valor_cadena", "falso", "verdadero".'),
-            # src_loc = 'in/a22.psi' # <8,10> Error sintactico: se encontro: ";"; se esperaba: "=", ".", "(", "identificador".
-            # src_loc = 'in/a23.psi' # <9,14> Error sintactico: se encontro: ")"; se esperaba: "-", "!", "(", "identificador", "valor_entero", "valor_real", "valor_caracter", "valor_cadena", "falso", "verdadero".
+            ('in/a22.psi', '<8,10> Error sintactico: se encontro: ";"; se esperaba: "=", ".", "(", "identificador".'),
+            ('in/a23.psi', '<9,14> Error sintactico: se encontro: ")"; se esperaba: "-", "!", "(", "identificador", "valor_entero", "valor_real", "valor_caracter", "valor_cadena", "falso", "verdadero".')
         ]
         for f in src:
             print("SRC : {}".format(f[0]))
