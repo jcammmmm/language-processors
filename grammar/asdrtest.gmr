@@ -1,8 +1,0 @@
-A : B token C
-A : H token D
-A : X token G
-B : token1 token6
-B : token2 X
-B : token3 Z
-B : token4 W
-B : token5 S
