@@ -1,0 +1,38 @@
+	@Override
+	public T visitConditional(ConditionalContext ctx) {
+		// TODO Auto-generated method stub
+		String op = ctx.ROP().getText();
+
+		Double num1 = (Double)visitExpr(ctx.expr(0));
+		Double num2 = (Double)visitExpr(ctx.expr(1));
+
+		Boolean ans = null;
+
+		switch (op) {
+		case "<":
+			ans = num1 < num2;
+			break;
+		case "<=":
+			ans = num1 <= num2;
+			break;
+		case ">":
+			ans = num1 > num2;
+			break;
+		case ">=":
+			ans = num1 >= num2;
+			break;
+		case "==":
+			ans = Math.abs(num1-num2) < 0.000000001;
+			break;
+		case "!=":
+			ans = Math.abs(num1-num2) > 0.000000001;
+			break;
+		}
+
+		if(ans){
+			visitCommands(ctx.commands());
+		}
+
+
+		return null;
+	}

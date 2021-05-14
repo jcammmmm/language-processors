@@ -1,0 +1,29 @@
+	@Override
+	public T visitCommand(CommandContext ctx) {
+		
+		if(ctx.printexpr() != null){
+			Double ans = (Double)visitExpr(ctx.printexpr().expr());
+			int aux = (int)Math.floor(ans);
+			
+			if(ans-aux < 1e-9){
+				System.out.println(aux);
+			}else{
+				System.out.println(ans);
+			}
+			
+		}else if (ctx.VAR() != null){
+			String name = ctx.ID().getText();
+			if(table.get(name)!=null){
+				int line = ctx.ID().getSymbol().getLine();
+				int col = ctx.ID().getSymbol().getCharPositionInLine()+1;
+				System.err.printf("<%d:%d> Error semantico, la variable con nombre: \"" + name + "\" ya fue declarada.\n",line,col);
+				System.exit(-1);
+			}else{
+				table.put(name, visitExpr(ctx.expr()));
+			}
+		}else{
+			return visitChildren(ctx);
+		}
+		
+		return super.visitCommand(ctx);
+	}
