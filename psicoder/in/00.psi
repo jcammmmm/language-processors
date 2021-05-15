@@ -1,0 +1,8 @@
+funcion_principal
+    cadena c = 'b';
+    booleano c = "thisisastring", a = 3;
+    entero x = 'n', d = "numero";
+    real z = 44, r = c;
+    caracter d = 'a';
+    entero e = (3 + 4);
+fin_principal

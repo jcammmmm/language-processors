@@ -1,0 +1,3 @@
+funcion_principal
+    entero t = (3 + 3 +3  + 5 + 4 + 3 + (4 * 8) + 8) + 9 + (3 + 4) + 4;
+fin_principal
