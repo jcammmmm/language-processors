@@ -1,0 +1,5 @@
+funcion_principal
+  entero a;
+  leer( a );
+  imprimir( " variable ", a );
+fin_principal

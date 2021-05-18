@@ -1,0 +1,8 @@
+funcion_principal
+    imprimir( "letra " , letter , " contador ", (cont * cont)  );
+    imprimir( "total", cont * 2 + 1 )
+    ; // no es un error sintactico
+    imprimir( "total", cont * 2 + 1; //error sintáctico
+    imprimir;( "total", cont * 2 + 1);//error sintáctico
+    imprimir( );//error sintáctico
+fin_principal

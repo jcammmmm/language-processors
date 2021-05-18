@@ -1,0 +1,10 @@
+funcion_principal
+  entero a;
+  a = 3 * (5) / b;
+  a = a + 1            ;
+  a = x;c = 1;
+  s = "cinco";
+  booleano b = 3, c = 8, t = "sesenta", a, b, c;
+  h = 3;
+  b = "lenguajes de programacion";
+fin_principal
