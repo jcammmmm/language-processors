@@ -1,19 +1,25 @@
 grammar PsiCoder;
 
 program
-    : definition? 'funcion_principal' block 'fin_principal' definition?;
+    : (definition)* 'funcion_principal' block 'fin_principal' (definition)*;
 
 definition
-    : function definition
-    | structure definition
+    : function
+    | structure
     ;
 
 function
-    : 'funcion'
+    : 'funcion' type ID '(' (type ID) (',' type ID)* ')'
+            'hacer' (block | return)
+      'fin_funcion'
+    ;
+
+return
+    : 'retornar' (expression | ID)? ';'
     ;
     
 structure
-    : 'estructura'
+    : 'estructura' ID (declaration)* 'fin_estructura'
     ;
 
 block
@@ -31,6 +37,7 @@ statement
     | while
     | doWhile
     | switch
+    | return
     ;
 
 if
@@ -80,7 +87,7 @@ read
     ;
 
 declaration
-    : TYPE (assignment | ID) (',' (assignment | ID))* SMCOLON
+    : type (assignment | ID) (',' (assignment | ID))* SMCOLON
     ;
 
 assignment
@@ -106,11 +113,14 @@ literal
     : (LIT_BUL | LIT_CAD | LIT_NUM | LIT_CHR)
     ;
 
+type
+    : ID | 'entero' | 'real' | 'cadena' | 'booleano' | 'caracter'
+    ;
+
 
 COMMENT 	: '/*' .*? '*/' -> skip ;
 LINE_COMMENT: '//' ~[\r\n]* -> skip ;
 WS		    : [ \t\r\n]+ -> skip ;
-TYPE        : 'entero' | 'real' | 'cadena' | 'booleano' | 'caracter';
 LIT_NUM     : [0-9]+(.[0-9]+)?;
 LIT_BUL     : 'verdadero' | 'falso';
 LIT_CAD     : '"'[ a-zA-Z0-9_-]*'"';
