@@ -26,6 +26,49 @@ statement
     | print
     | read
     | funCall ';'
+    | if
+    | for
+    | while
+    | doWhile
+    | switch
+    ;
+
+if
+    : 'si' '(' expression ')' 'entonces' block ifThen
+    ;
+
+ifThen
+    : 'fin_si'
+    | 'si_no' block 'fin_si'
+    ;
+
+for
+    : 'para' '('
+        (declaration | assignment ';')
+        expression ';'
+        (value | expression) ')'
+            'hacer' block 'fin_para'
+    ;
+
+while
+    : 'mientras' '(' expression ')' 'hacer' block 'fin_mientras'
+    ;
+
+doWhile
+    : 'hacer' block 'mientras' '(' expression ')' ';'
+    ;
+
+switch
+    : 'seleccionar' '(' ID ')' 'entre' ((case)+ | default) 'fin_seleccionar'
+    ;
+
+case
+    : 'caso' literal ':' (statement)* 'romper;'?
+    | default
+    ;
+
+default
+    : 'defecto' ':' (statement)* 'romper;'?
     ;
 
 print
@@ -45,13 +88,13 @@ assignment
     ;
 
 value
-    : (ID | literal | arithExpr | funCall)
+    : (ID | literal | expression | funCall)
     ;
 
-arithExpr
-    : (LIT_NUM | ID) BIN_OP arithExpr
-    | '(' arithExpr ')' (BIN_OP arithExpr)*
-    | (LIT_NUM | ID)
+expression
+    : (literal | ID) BIN_OP expression
+    | '(' expression ')' (BIN_OP expression)*
+    | (literal | ID)
     ;
 
 funCall
@@ -73,6 +116,7 @@ LIT_BUL     : 'verdadero' | 'falso';
 LIT_CAD     : '"'[ a-zA-Z0-9_-]*'"';
 LIT_CHR     : '\''[a-z]'\'';
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
-BIN_OP      : '+' | '-' | '/' | '*' | '%';
+BIN_OP      : '+' | '-' | '/' | '*' | '%' | '||' | '&&' |
+              '<' | '<=' | '==' | '!=' | '=>' | '>' ;
 UNA_OP      : '!';
 SMCOLON     : ';';

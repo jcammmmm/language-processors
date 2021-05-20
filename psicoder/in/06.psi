@@ -1,0 +1,13 @@
+funcion_principal
+    si ( num1 > num2 ) entonces
+       res = num1;
+    si_no
+       res = num2;
+    fin_si
+
+     si ( num1 > num2 ) entonces //error sintáctico, falta ‘entonces’
+           res = num1;
+        si_no
+           res = num2;
+        fin_si
+    fin_principal

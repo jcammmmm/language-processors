@@ -1,0 +1,8 @@
+funcion_principal
+    para ( entero i = 0 ; i < a ; 1 ) hacer
+        imprimir(i);
+    fin_para
+    para ( j = 0; i < a || j  < 100  ; p ) hacer
+        imprimir(j);
+    fin_para
+fin_principal

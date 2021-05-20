@@ -1,0 +1,5 @@
+funcion_principal
+    hacer
+        a = a/2;
+    mientras( a > 0 ); // debe terminar en punto y coma
+fin_principal
