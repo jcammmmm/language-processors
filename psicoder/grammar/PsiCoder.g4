@@ -1,119 +1,119 @@
 grammar PsiCoder;
 
 program
-    : (definition)* 'funcion_principal' block 'fin_principal' (definition)*;
+    : (definition)* 'funcion_principal' bloque 'fin_principal' (definition)*;
 
 definition
-    : function
-    | structure
+    : funcion
+    | estructura
     ;
 
-function
-    : 'funcion' type ID '(' (type ID) (',' type ID)* ')'
-            'hacer' (block | return)
+funcion
+    : 'funcion' tipo ID '(' (tipo ID) (',' tipo ID)* ')'
+            'hacer' (bloque | retornar)
       'fin_funcion'
     ;
 
-return
-    : 'retornar' (expression | ID)? ';'
+retornar
+    : 'retornar' (expresion | ID)? ';'
     ;
     
-structure
-    : 'estructura' ID (declaration)* 'fin_estructura'
+estructura
+    : 'estructura' ID (declaracion)* 'fin_estructura'
     ;
 
-block
-    : (statement)*
+bloque
+    : (proposicion)*
     ;
 
-statement
-    : declaration
-    | assignment ';'
-    | print
-    | read
-    | funCall ';'
-    | if
-    | for
-    | while
-    | doWhile
-    | switch
-    | return
+proposicion
+    : declaracion
+    | asignacion ';'
+    | imprimir
+    | leer
+    | funLlamado ';'
+    | si
+    | para
+    | mientras
+    | hacerMientras
+    | seleccionar
+    | retornar
     ;
 
-if
-    : 'si' '(' expression ')' 'entonces' block ifThen
+si
+    : 'si' '(' expresion ')' 'entonces' bloque siEntonces
     ;
 
-ifThen
+siEntonces
     : 'fin_si'
-    | 'si_no' block 'fin_si'
+    | 'si_no' bloque 'fin_si'
     ;
 
-for
+para
     : 'para' '('
-        (declaration | assignment ';')
-        expression ';'
-        (value | expression) ')'
-            'hacer' block 'fin_para'
+        (declaracion | asignacion ';')
+        expresion ';'
+        (valor | expresion) ')'
+            'hacer' bloque 'fin_para'
     ;
 
-while
-    : 'mientras' '(' expression ')' 'hacer' block 'fin_mientras'
+mientras
+    : 'mientras' '(' expresion ')' 'hacer' bloque 'fin_mientras'
     ;
 
-doWhile
-    : 'hacer' block 'mientras' '(' expression ')' ';'
+hacerMientras
+    : 'hacer' bloque 'mientras' '(' expresion ')' ';'
     ;
 
-switch
-    : 'seleccionar' '(' ID ')' 'entre' ((case)+ | default) 'fin_seleccionar'
+seleccionar
+    : 'seleccionar' '(' ID ')' 'entre' ((caso)+ | defecto) 'fin_seleccionar'
     ;
 
-case
-    : 'caso' literal ':' (statement)* 'romper;'?
-    | default
+caso
+    : 'caso' literal ':' (proposicion)* 'romper;'?
+    | defecto
     ;
 
-default
-    : 'defecto' ':' (statement)* 'romper;'?
+defecto
+    : 'defecto' ':' (proposicion)* 'romper;'?
     ;
 
-print
-    : 'imprimir' '(' value (',' value)* ')' ';'
+imprimir
+    : 'imprimir' '(' valor (',' valor)* ')' ';'
     ;
 
-read
+leer
     : 'leer' '(' ID ')' ';'
     ;
 
-declaration
-    : type (assignment | ID) (',' (assignment | ID))* SMCOLON
+declaracion
+    : tipo (asignacion | ID) (',' (asignacion | ID))* SMCOLON
     ;
 
-assignment
-    : ID '=' value
+asignacion
+    : ID '=' valor
     ;
 
-value
-    : (ID | literal | expression | funCall)
+valor
+    : (ID | literal | expresion | funLlamado)
     ;
 
-expression
-    : (literal | ID) BIN_OP expression
-    | '(' expression ')' (BIN_OP expression)*
+expresion
+    : (literal | ID) BIN_OP expresion
+    | '(' expresion ')' (BIN_OP expresion)*
     | (literal | ID)
     ;
 
-funCall
+funLlamado
     : ID '()'
-    | ID '(' value (',' value)* ')'
+    | ID '(' valor (',' valor)* ')'
     ;
 
 literal
     : (LIT_BUL | LIT_CAD | LIT_NUM | LIT_CHR)
     ;
 
-type
+tipo
     : ID | 'entero' | 'real' | 'cadena' | 'booleano' | 'caracter'
     ;
 
