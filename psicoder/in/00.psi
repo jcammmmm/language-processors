@@ -1,5 +1,5 @@
 funcion_principal
-    cadena c = 'b';
+    cadena c = 'b', x, y, d = "avion";
     booleano c = "thisisastring", a = 3;
     entero x = 'n', d = "numero";
     real z = 44, r = c;

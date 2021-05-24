@@ -1,7 +1,11 @@
 grammar PsiCoder;
 
 program
-    : (definition)* 'funcion_principal' bloque 'fin_principal' (definition)*;
+    : (definition)* principal (definition)*;
+
+principal
+    : FUN_PPAL bloque END_PPAL
+    ;
 
 definition
     : funcion
@@ -87,7 +91,11 @@ leer
     ;
 
 declaracion
-    : tipo (asignacion | ID) (',' (asignacion | ID))* SMCOLON
+    : tipo (inicializacion | ID) (',' (inicializacion | ID))* SMCOLON
+    ;
+
+inicializacion
+    : ID '=' valor
     ;
 
 asignacion
@@ -117,6 +125,9 @@ tipo
     : ID | 'entero' | 'real' | 'cadena' | 'booleano' | 'caracter'
     ;
 
+FUN_PPAL    : 'funcion_principal';
+END_PPAL    : 'fin_principal';
+
 
 COMMENT 	: '/*' .*? '*/' -> skip ;
 LINE_COMMENT: '//' ~[\r\n]* -> skip ;
@@ -130,3 +141,4 @@ BIN_OP      : '+' | '-' | '/' | '*' | '%' | '||' | '&&' |
               '<' | '<=' | '==' | '!=' | '=>' | '>' ;
 UNA_OP      : '!';
 SMCOLON     : ';';
+
