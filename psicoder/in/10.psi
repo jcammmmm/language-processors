@@ -6,5 +6,7 @@ funcion_principal
             imprimir(a*2);
             romper;
         defecto:
+            a = a + 3;
+            sqrt(a, 39);
     fin_seleccionar
 fin_principal

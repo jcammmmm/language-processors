@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         PsiCoderLexer lexer;
         if (args.length > 0)
-            lexer = new PsiCoderLexer(CharStreams.fromFileName("in/07.psi"));
+            lexer = new PsiCoderLexer(CharStreams.fromFileName("in/10.psi"));
             // lexer = new PsiCoderLexer(CharStreams.fromFileName(args[0]));
         else
             lexer = new PsiCoderLexer(CharStreams.fromStream(System.in));

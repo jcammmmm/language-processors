@@ -42,6 +42,7 @@ proposicion
     | hacerMientras
     | seleccionar
     | retornar
+    | romper
     ;
 
 si
@@ -79,12 +80,12 @@ seleccionar
     ;
 
 caso
-    : 'caso' literal ':' (proposicion)* 'romper;'?
+    : 'caso' literal ':' (proposicion)*
     | defecto
     ;
 
 defecto
-    : 'defecto' ':' (proposicion)* 'romper;'?
+    : 'defecto' ':' (proposicion)*
     ;
 
 imprimir
@@ -120,6 +121,10 @@ expresion
 funLlamado
     : ID '()'
     | ID '(' valor (',' valor)* ')'
+    ;
+
+romper
+    : 'romper;'
     ;
 
 literal

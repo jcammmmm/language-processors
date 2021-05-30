@@ -14,7 +14,10 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     private final StringBuilder transpiledSource;
     private final boolean enableDebugOutput;
+    // general identation control
     private int tabDepth;
+    // for 'selectionar' translation
+    private int switchPos = 0; // 0 = initial if, 1 = elif, 2 = else
 
     public PythonTranspiler() {
         transpiledSource = new StringBuilder();
@@ -167,6 +170,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     }
 
+    // TODO: Catch cases where 'range(from, to)' can be used
     @Override
     public void enterPara(PsiCoderParser.ParaContext ctx) {
         appendln(ctx.inicio().ID().getText() + " = " + ctx.valor().getText());
@@ -177,6 +181,7 @@ public class PythonTranspiler implements  PsiCoderListener {
         appendln(forSrc.toString());
     }
 
+    // TODO: Catch cases where 'range(from, to)' can be used
     @Override
     public void exitPara(PsiCoderParser.ParaContext ctx) {
         tabDepth++; // at this point we are outside of any block
@@ -201,17 +206,17 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void enterMientras(PsiCoderParser.MientrasContext ctx) {
-
+        appendln("while (" + getExpression(ctx.expresion()) + "):");
     }
 
     @Override
     public void exitMientras(PsiCoderParser.MientrasContext ctx) {
-
     }
 
+    // TODO: Elaborate this logic in order to capture the first loop
     @Override
     public void enterHacerMientras(PsiCoderParser.HacerMientrasContext ctx) {
-
+        appendln("while (" + getExpression(ctx.expresion()) + "):");
     }
 
     @Override
@@ -226,22 +231,45 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void exitSeleccionar(PsiCoderParser.SeleccionarContext ctx) {
-
+        switchPos = 0; // the next time that enters a 'seleccionar' start with an if
     }
 
     @Override
     public void enterCaso(PsiCoderParser.CasoContext ctx) {
+        String cond;
+        switch (switchPos) {
+            case 0:
+                cond = "if";
+                break;
+            case 1:
+                cond = "elif";
+                break;
+            default:
+                cond = "else";
+        }
 
+        if (ctx.getChild(0).getText().equals("caso")) {
+            String switchVar = ((PsiCoderParser.SeleccionarContext) ctx.getParent()).ID().getText();
+            appendln(cond + " " + ctx.literal().getText() + " == " + switchVar + ":");
+            tabDepth++; // identation for the following propositions
+            switchPos = 1;
+        } else { // should be the reserved word 'defecto'
+            tabDepth++;
+            switchPos = 2;
+        }
     }
 
     @Override
     public void exitCaso(PsiCoderParser.CasoContext ctx) {
-
+        tabDepth--; // removes identation for 'caso'
     }
 
     @Override
     public void enterDefecto(PsiCoderParser.DefectoContext ctx) {
-
+        if (ctx.getParent() instanceof PsiCoderParser.CasoContext)
+           tabDepth--;
+        appendln("else:");
+        tabDepth++; // identation for the following propositions
     }
 
     @Override
@@ -370,6 +398,15 @@ public class PythonTranspiler implements  PsiCoderListener {
     public void exitFunLlamado(PsiCoderParser.FunLlamadoContext ctx) {
         if (!(ctx.getParent() instanceof PsiCoderParser.ValorContext))
             appendln(ctx.getText());
+    }
+
+    @Override
+    public void enterRomper(PsiCoderParser.RomperContext ctx) {
+    }
+
+    @Override
+    public void exitRomper(PsiCoderParser.RomperContext ctx) {
+        appendln("break");
     }
 
     @Override
