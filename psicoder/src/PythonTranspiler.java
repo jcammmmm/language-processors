@@ -119,12 +119,23 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void enterEstructura(PsiCoderParser.EstructuraContext ctx) {
-
+        appendln(String.format("class %s:", ctx.ID().getText()));
+        tabDepth++;
+        String params = "";
+        for (PsiCoderParser.DeclaracionContext decl : ctx.declaracion()){
+            for (TerminalNode t : decl.ID()) {
+                params += ", " + t.getText();
+            }
+        }
+        appendln("def __init__(self" + params + "):");
+        tabDepth++;
     }
 
     @Override
     public void exitEstructura(PsiCoderParser.EstructuraContext ctx) {
-
+        tabDepth--;
+        tabDepth--;
+        appendln("");
     }
 
     @Override
@@ -305,7 +316,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void exitLeer(PsiCoderParser.LeerContext ctx) {
-        String identifier = ctx.ID().getText();
+        String identifier = ctx.variable().getText();
         appendln(identifier + " = input()");
     }
 
@@ -341,8 +352,15 @@ public class PythonTranspiler implements  PsiCoderListener {
             default:
                 initValue = "null";
         }
-        for (TerminalNode termNode : ctx.ID())
-            appendln(termNode.getText() + " = " + initValue);
+        if (ctx.getParent() instanceof PsiCoderParser.EstructuraContext) {
+            for (TerminalNode termNode : ctx.ID())
+                appendln("self." + termNode.getText() + " = " + initValue);
+        }
+        else {
+            for (TerminalNode termNode : ctx.ID())
+                appendln(termNode.getText() + " = " + initValue);
+        }
+
     }
 
     @Override
@@ -352,7 +370,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void exitInicializacion(PsiCoderParser.InicializacionContext ctx) {
-        String id = ctx.ID().getText();
+        String id = ctx.variable().getText();
         String value = ctx.valor().getText();
         appendln(id + " = " + value);
     }
@@ -364,7 +382,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void exitAsignacion(PsiCoderParser.AsignacionContext ctx) {
-        String id = ctx.ID().getText();
+        String id = ctx.variable().getText();
         String value = ctx.valor().getText();
         appendln(id + " = " + value);
     }
@@ -386,6 +404,16 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void exitExpresion(PsiCoderParser.ExpresionContext ctx) {
+
+    }
+
+    @Override
+    public void enterVariable(PsiCoderParser.VariableContext ctx) {
+
+    }
+
+    @Override
+    public void exitVariable(PsiCoderParser.VariableContext ctx) {
 
     }
 

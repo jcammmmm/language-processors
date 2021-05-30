@@ -13,13 +13,13 @@ definition
     ;
 
 funcion
-    : 'funcion' tipo ID '(' (tipo ID) (',' tipo ID)* ')'
-            'hacer' (bloque | retornar)
+    : 'funcion' tipo ID ('()' | '(' (tipo ID) (',' tipo ID)* ')')
+            'hacer' bloque
       'fin_funcion'
     ;
 
 retornar
-    : 'retornar' (expresion | ID)? ';'
+    : 'retornar' (expresion | variable)? ';'
     ;
     
 estructura
@@ -93,7 +93,7 @@ imprimir
     ;
 
 leer
-    : 'leer' '(' ID ')' ';'
+    : 'leer' '(' variable ')' ';'
     ;
 
 declaracion
@@ -101,21 +101,25 @@ declaracion
     ;
 
 inicializacion
-    : ID '=' valor
+    : variable '=' valor
     ;
 
 asignacion
-    : ID '=' valor
+    : variable '=' valor
     ;
 
 valor
-    : (ID | literal | expresion | funLlamado)
+    : (variable | literal | expresion | funLlamado)
     ;
 
 expresion
-    : (literal | ID) BIN_OP expresion
+    : (literal | variable) BIN_OP expresion
     | '(' expresion ')' (BIN_OP expresion)*
-    | (literal | ID)
+    | (literal | variable)
+    ;
+
+variable
+    : ID ('.' ID)*
     ;
 
 funLlamado

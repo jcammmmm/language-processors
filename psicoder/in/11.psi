@@ -7,3 +7,9 @@ estructura Point
     real a,b,c;
     C c;
 fin_estructura
+funcion_principal
+    Point p1 = x;
+    Point p2;
+    p2.x = 5;
+    p2.y = 13;
+fin_principal
