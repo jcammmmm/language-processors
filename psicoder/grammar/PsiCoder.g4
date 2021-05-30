@@ -55,10 +55,15 @@ siEntonces
 
 para
     : 'para' '('
-        (declaracion | asignacion ';')
+        inicio ';'
         expresion ';'
         (valor | expresion) ')'
             'hacer' bloque 'fin_para'
+    ;
+
+inicio
+    : tipo ID '=' valor
+    | ID '=' valor
     ;
 
 mientras

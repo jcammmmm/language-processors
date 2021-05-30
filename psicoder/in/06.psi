@@ -7,6 +7,9 @@ funcion_principal
 
      si ( num1 > num2 ) entonces //error sintáctico, falta ‘entonces’
            res = num1;
+           si (x % 2 == 0) entonces
+              imprimir(x);
+           fin_si
         si_no
            res = num2;
         fin_si
