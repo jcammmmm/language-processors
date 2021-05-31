@@ -40,6 +40,7 @@ funcion_principal
                     leer(altura);
                     imprimir((baseMayor+baseMenor)/2 * altura);
                 defecto:
+                    imprimir("caso desconocido");
             fin_seleccionar
 
         caso 1 :

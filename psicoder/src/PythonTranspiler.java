@@ -6,7 +6,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.Stack;
 
 public class PythonTranspiler implements  PsiCoderListener {
 
@@ -17,7 +19,7 @@ public class PythonTranspiler implements  PsiCoderListener {
     // general identation control
     private int tabDepth;
     // for 'selectionar' translation
-    private int switchPos = 0; // 0 = initial if, 1 = elif, 2 = else
+    private Stack<Integer> switchState = new Stack<>(); // 0 = initial if, 1 = elif, 2 = else
 
     public PythonTranspiler() {
         transpiledSource = new StringBuilder();
@@ -265,18 +267,18 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void enterSeleccionar(PsiCoderParser.SeleccionarContext ctx) {
-
+        switchState.push(0); // the next time that enters a 'seleccionar' start with an if
     }
 
     @Override
     public void exitSeleccionar(PsiCoderParser.SeleccionarContext ctx) {
-        switchPos = 0; // the next time that enters a 'seleccionar' start with an if
+        switchState.pop();
     }
 
     @Override
     public void enterCaso(PsiCoderParser.CasoContext ctx) {
         String cond;
-        switch (switchPos) {
+        switch (switchState.peek()) {
             case 0:
                 cond = "if";
                 break;
@@ -291,10 +293,11 @@ public class PythonTranspiler implements  PsiCoderListener {
             String switchVar = ((PsiCoderParser.SeleccionarContext) ctx.getParent()).ID().getText();
             appendln(cond + " " + switchVar + " == " + ctx.literal().getText() +  ":");
             tabDepth++; // identation for the following propositions
-            switchPos = 1;
+            switchState.pop();
+            switchState.push(1);
         } else { // should be the reserved word 'defecto'
             tabDepth++;
-            switchPos = 2;
+            switchState.push(1);
         }
     }
 
@@ -309,6 +312,8 @@ public class PythonTranspiler implements  PsiCoderListener {
            tabDepth--;
         appendln("else:");
         tabDepth++; // identation for the following propositions
+        if (ctx.getChildCount() == 2)
+            appendln("pass");
     }
 
     @Override
@@ -316,6 +321,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     }
 
+    // TODO: fix bug when string has dots in its contents
     @Override
     public void enterImprimir(PsiCoderParser.ImprimirContext ctx) {
 
