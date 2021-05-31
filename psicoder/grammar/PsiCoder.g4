@@ -147,7 +147,7 @@ COMMENT 	: '/*' .*? '*/' -> skip ;
 LINE_COMMENT: '//' ~[\r\n]* -> skip ;
 WS		    : [ \t\r\n]+ -> skip ;
 LIT_NUM     : [0-9]+(.[0-9]+)?;
-LIT_BUL     : 'verdadero' | 'falso';
+LIT_BUL     : 'verdadero' {setText("True");} | 'falso' {setText("False");};
 LIT_CAD     : '"'[ a-zA-Z0-9_-]*'"';
 LIT_CHR     : '\''[a-z]'\'';
 ID          : [a-zA-Z][a-zA-Z0-9_]*;

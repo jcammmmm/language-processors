@@ -1,5 +1,5 @@
 funcion entero sum(entero a, entero b) hacer
-    retornar a + b;
+    retornar c;
 fin_funcion
 funcion_principal
     entero result = sum(3, 4);

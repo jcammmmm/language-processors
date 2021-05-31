@@ -77,8 +77,11 @@ public class PythonTranspiler implements  PsiCoderListener {
     @Override
     public void enterPrincipal(PsiCoderParser.PrincipalContext ctx) {
         appendln("def main():");
-        if (ctx.bloque().getChildCount() == 0)
+        if (ctx.bloque().getChildCount() == 0) {
+            tabDepth++;
             appendln("pass");
+            tabDepth--;
+        }
     }
 
     @Override
@@ -86,6 +89,7 @@ public class PythonTranspiler implements  PsiCoderListener {
         appendln("");
         appendln("if __name__ == '__main__':");
         appendln(TAB + "main()");
+        appendln("");
     }
 
     @Override
@@ -99,17 +103,39 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void enterFuncion(PsiCoderParser.FuncionContext ctx) {
-
+        if (ctx.ID().size() == 1) {// function has no params
+            appendln("def " + ctx.ID(0) + "():");
+        }
+        else {
+            StringBuilder funDcl = new StringBuilder("def ");
+            boolean funName = true;
+            for (TerminalNode t : ctx.ID()) {
+                if (funName) {
+                    funDcl.append(t.getText());
+                    funDcl.append("(");
+                    funName = false;
+                } else {
+                    funDcl.append(t.getText() + ", ");
+                }
+            }
+            funDcl.deleteCharAt(funDcl.length() - 1); // ' '
+            funDcl.deleteCharAt(funDcl.length() - 1); // ','
+            funDcl.append("):");
+            appendln(funDcl.toString());
+        }
     }
 
     @Override
     public void exitFuncion(PsiCoderParser.FuncionContext ctx) {
-
+        appendln("");
     }
 
     @Override
     public void enterRetornar(PsiCoderParser.RetornarContext ctx) {
-
+        if (ctx.getChildCount() == 2) // only return word
+            appendln("return");
+        else
+            appendln("return " + ctx.getChild(1).getText());
     }
 
     @Override
@@ -141,6 +167,8 @@ public class PythonTranspiler implements  PsiCoderListener {
     @Override
     public void enterBloque(PsiCoderParser.BloqueContext ctx) {
         tabDepth++;
+        if (ctx.getChildCount() == 0)
+            appendln("pass");
     }
 
     @Override
@@ -160,7 +188,7 @@ public class PythonTranspiler implements  PsiCoderListener {
     @Override
     public void enterSi(PsiCoderParser.SiContext ctx) {
         StringBuilder ifSrc = new StringBuilder("if ");
-        ifSrc.append(ctx.expresion().getText());
+        ifSrc.append(replaceBooleanOps(replaceBooleanOps(ctx.expresion().getText())));
         ifSrc.append(":");
         appendln(ifSrc.toString());
     }
@@ -184,10 +212,10 @@ public class PythonTranspiler implements  PsiCoderListener {
     // TODO: Catch cases where 'range(from, to)' can be used
     @Override
     public void enterPara(PsiCoderParser.ParaContext ctx) {
-        appendln(ctx.inicio().ID().getText() + " = " + ctx.valor().getText());
+        appendln(ctx.inicio().ID().getText() + " = " + ctx.inicio().valor().getText());
         StringBuilder forSrc = new StringBuilder();
         forSrc.append("while (");
-        forSrc.append(replaceBooleanOps(ctx.expresion().get(0).getText()));
+        forSrc.append(replaceBooleanOps(replaceBooleanOps(ctx.expresion().get(0).getText())));
         forSrc.append("):");
         appendln(forSrc.toString());
     }
@@ -200,7 +228,7 @@ public class PythonTranspiler implements  PsiCoderListener {
         if (ctx.valor() != null) { // if the step is given by an already computed value
             appendln(identifier + "+=" + ctx.valor().getText());
         } else { // if value is an expression
-            appendln(identifier + "+=" + ctx.expresion(1).getText());
+            appendln(identifier + "+=" + replaceBooleanOps(ctx.expresion(1).getText()));
         }
         tabDepth--; // restore depth
     }
@@ -217,7 +245,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
     @Override
     public void enterMientras(PsiCoderParser.MientrasContext ctx) {
-        appendln("while (" + getExpression(ctx.expresion()) + "):");
+        appendln("while (" + replaceBooleanOps(getExpression(ctx.expresion()) + "):"));
     }
 
     @Override
@@ -227,7 +255,7 @@ public class PythonTranspiler implements  PsiCoderListener {
     // TODO: Elaborate this logic in order to capture the first loop
     @Override
     public void enterHacerMientras(PsiCoderParser.HacerMientrasContext ctx) {
-        appendln("while (" + getExpression(ctx.expresion()) + "):");
+        appendln("while (" + replaceBooleanOps(getExpression(ctx.expresion()) + "):"));
     }
 
     @Override
@@ -261,7 +289,7 @@ public class PythonTranspiler implements  PsiCoderListener {
 
         if (ctx.getChild(0).getText().equals("caso")) {
             String switchVar = ((PsiCoderParser.SeleccionarContext) ctx.getParent()).ID().getText();
-            appendln(cond + " " + ctx.literal().getText() + " == " + switchVar + ":");
+            appendln(cond + " " + switchVar + " == " + ctx.literal().getText() +  ":");
             tabDepth++; // identation for the following propositions
             switchPos = 1;
         } else { // should be the reserved word 'defecto'
@@ -302,11 +330,11 @@ public class PythonTranspiler implements  PsiCoderListener {
             printParams.append(valCtx.getText() + ", ");
         }
         printTemplate.deleteCharAt(printTemplate.length() - 1); // space
-        printTemplate.append("')");
+        printTemplate.append("'");
         printParams.deleteCharAt(printParams.length() - 1); // space
         printParams.deleteCharAt(printParams.length() - 1); // comma
         printParams.append(")");
-        appendln(printTemplate.toString() + printParams.toString());
+        appendln(printTemplate.toString() + printParams.toString() + ")");
     }
 
     @Override
