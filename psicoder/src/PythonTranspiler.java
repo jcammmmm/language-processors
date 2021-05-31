@@ -384,7 +384,7 @@ public class PythonTranspiler implements  PsiCoderListener {
                 initValue = "\"\"";
                 break;
             default:
-                initValue = "null";
+                initValue = "None";
         }
         if (ctx.getParent() instanceof PsiCoderParser.EstructuraContext) {
             for (TerminalNode termNode : ctx.ID())

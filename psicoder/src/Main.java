@@ -3,6 +3,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Main {
@@ -11,10 +12,10 @@ public class Main {
             transpilePsicodeSource("../in/t42.psi");
         else {
             String[] samples = {
-                "../in/a04.psi", // maximum number
-                "../in/a05.psi", // prime number
-                "../in/a08.psi", // geometry
-                "../in/a19.psi", // students
+                "in/a04.psi", // maximum number
+                "in/a05.psi", // prime number
+                "in/a08.psi", // geometry
+                "in/a19.psi", // students
                 "in/00.psi",
                 "in/01.psi",
                 "in/02.psi",
@@ -36,13 +37,21 @@ public class Main {
                 System.out.println("#######################################################");
                 System.out.println("#######################################################");
                 System.out.println("PSICODER SOURCE: " + filename);
-                transpilePsicodeSource(filename);
+                String pythonSource = transpilePsicodeSource(filename);
+
+                filename = filename.replace("psi", "py").replace("in", "result");
+                FileOutputStream outputStream = new FileOutputStream(filename);
+                byte[] strToBytes = pythonSource.getBytes();
+                outputStream.write(strToBytes);
+
+                outputStream.close();
+
                 Thread.sleep(1000L);
             }
         }
     }
 
-    private static void transpilePsicodeSource(String filename) throws IOException {
+    private static String transpilePsicodeSource(String filename) throws IOException {
         PsiCoderLexer lexer;
         lexer = new PsiCoderLexer(CharStreams.fromFileName(filename));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
@@ -51,6 +60,6 @@ public class Main {
         ParseTreeWalker walker = new ParseTreeWalker();
         PythonTranspiler pythonTranspiler = new PythonTranspiler();
         walker.walk(pythonTranspiler, tree);
-        System.out.println(pythonTranspiler.getTranspiledSource());
+        return pythonTranspiler.getTranspiledSource();
     }
 }
